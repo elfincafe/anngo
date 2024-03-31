@@ -2,6 +2,7 @@ package padding
 
 import (
 	"crypto/rand"
+	"errors"
 )
 
 type ISO10126 struct {
@@ -15,38 +16,38 @@ func NewIso10126(buffer []byte) *ISO10126 {
 	return p
 }
 
-func (p *ISO10126) Pad(BlockSize int) error {
+func (p *ISO10126) Pad(BlockSize int) ([]byte, error) {
 	// Padding Size
 	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
-		return nil
+		return p.buffer, nil
 	}
 	// Padding
 	pad := make([]byte, size)
 	_, err := rand.Read(pad)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	pad[size-1] = byteMap1[size]
 	p.buffer = append(p.buffer, pad...)
-	return nil
+	return p.buffer, nil
 }
 
-func (p *ISO10126) Unpad(BlockSize int) error {
+func (p *ISO10126) Unpad(BlockSize int) ([]byte, error) {
 	// Padding Size
 	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
-		return nil
+		return p.buffer, nil
 	}
 	// Unpadding
 	b := p.buffer[len(p.buffer)-1]
 	if _, ok := byteMap2[b]; !ok {
-		return nil
+		return nil, errors.New("Can't find ISO10126 padding")
 	}
 	idx := byteMap2[b]
 	p.buffer = p.buffer[:idx]
 
-	return nil
+	return p.buffer, nil
 }
 
 func (p *ISO10126) Name() string {

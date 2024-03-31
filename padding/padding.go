@@ -22,8 +22,8 @@ var (
 )
 
 type Padding interface {
-	Pad(int) error
-	Unpad(int) error
+	Pad(int) ([]byte, error)
+	Unpad(int) ([]byte, error)
 	Name() string
 }
 

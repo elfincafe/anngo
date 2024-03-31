@@ -8,9 +8,9 @@ func TestGenerate(t *testing.T) {
 	cases := []struct {
 		blockSize int
 	}{
-		{AES128},
-		{AES192},
-		{AES256},
+		{BlockSize128},
+		{BlockSize192},
+		{BlockSize256},
 		{123},
 	}
 	for k, v := range cases {

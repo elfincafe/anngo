@@ -2,15 +2,16 @@ package anngo
 
 import (
 	"crypto/rand"
+	"fmt"
 
 	"anngo/mode"
 	"anngo/padding"
 )
 
 const (
-	AES128 = 128
-	AES192 = 192
-	AES256 = 256
+	BlockSize128 = 128
+	BlockSize192 = 192
+	BlockSize256 = 256
 )
 
 type AES struct {
@@ -27,30 +28,40 @@ func newAes(password []byte, blockSize int) *AES {
 }
 
 func NewAes128(password []byte) *AES {
-	aes := newAes(password, AES128)
+	aes := newAes(password, BlockSize128)
 	return aes
 }
 
 func NewAes192(password []byte) *AES {
-	aes := newAes(password, AES192)
+	aes := newAes(password, BlockSize192)
 	return aes
 }
 
 func NewAes256(password []byte) *AES {
-	aes := newAes(password, AES256)
+	aes := newAes(password, BlockSize256)
 	return aes
 }
 
-func (aes *AES) Encrypt(p *padding.Padding) []byte {
-	return []byte{}
+func (aes *AES) Encrypt(p *padding.Padding) ([]byte, error) {
+	// Check Block Size
+	if aes.blockSize != BlockSize128 && aes.blockSize != BlockSize192 && aes.blockSize != BlockSize256 {
+		return nil, fmt.Errorf(`Invalid Block Size %d.`, aes.blockSize)
+	}
+
+	return []byte{}, nil
 }
 
-func (aes *AES) Decrypt(p *padding.Padding) []byte {
-	return []byte{}
+func (aes *AES) Decrypt(p *padding.Padding) ([]byte, error) {
+	// Check Block Size
+	if aes.blockSize != BlockSize128 && aes.blockSize != BlockSize192 && aes.blockSize != BlockSize256 {
+		return nil, fmt.Errorf(`Invalid Block Size %d.`, aes.blockSize)
+	}
+
+	return []byte{}, nil
 }
 
 func Generate(blockSize int) []byte {
-	b := make([]byte, blockSize, blockSize)
+	b := make([]byte, blockSize)
 	_, err := rand.Read(b)
 	if err != nil {
 		return []byte{}
