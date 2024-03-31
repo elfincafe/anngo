@@ -1,11 +1,5 @@
 package padding
 
-const (
-	Block128 = 128
-	Block192 = 192
-	Block256 = 256
-)
-
 var (
 	byteMap1 = map[int]byte{
 		0: 0x00, 1: 0x01, 2: 0x02, 3: 0x03, 4: 0x04,
@@ -28,13 +22,9 @@ var (
 )
 
 type Padding interface {
-	Pad() error
-	Unpad() error
-}
-
-type paddingBase struct {
-	BlockSize int
-	Buffer    []byte
+	Pad(int) error
+	Unpad(int) error
+	Name() string
 }
 
 func paddingLength(blockSize, length int) int {
@@ -43,15 +33,6 @@ func paddingLength(blockSize, length int) int {
 		return 0
 	} else if length < size {
 		return size - length
-	} else {
-		return (size - length%size)
 	}
-}
-
-func isValidBlockSize(blockSize int) bool {
-	if (blockSize == Block128) || (blockSize == Block192) || (blockSize == Block256) {
-		return true
-	} else {
-		return false
-	}
+	return (size - length%size)
 }

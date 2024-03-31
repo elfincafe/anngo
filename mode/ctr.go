@@ -1,14 +1,23 @@
 package mode
 
-import (
-	"anngo/padding"
-)
-
 type CTR struct {
-	padding *padding.Padding
+	name string
 }
 
-func NewCTR(p *padding.Padding) *CTR {
+func NewCTR() *CTR {
 	m := new(CTR)
+	m.name = "CTR"
 	return m
+}
+
+func (m *CTR) Encrypt() ([]byte, error) {
+	return nil, nil
+}
+
+func (m *CTR) Decrypt() ([]byte, error) {
+	return nil, nil
+}
+
+func (m *CTR) Name() string {
+	return m.name
 }

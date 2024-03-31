@@ -2,27 +2,22 @@ package padding
 
 import (
 	"crypto/rand"
-	"fmt"
 )
 
 type ISO10126 struct {
-	paddingBase
+	name   string
+	buffer []byte
 }
 
-func NewIso10126(buffer []byte, blockSize int) *ISO10126 {
+func NewIso10126(buffer []byte) *ISO10126 {
 	p := new(ISO10126)
-	copy(p.Buffer, buffer)
-	p.BlockSize = blockSize
+	copy(p.buffer, buffer)
 	return p
 }
 
-func (p *ISO10126) Pad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *ISO10126) Pad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
@@ -33,27 +28,27 @@ func (p *ISO10126) Pad() error {
 		return err
 	}
 	pad[size-1] = byteMap1[size]
-	p.Buffer = append(p.Buffer, pad...)
+	p.buffer = append(p.buffer, pad...)
 	return nil
 }
 
-func (p *ISO10126) Unpad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *ISO10126) Unpad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
 	// Unpadding
-	b := p.Buffer[len(p.Buffer)-1]
+	b := p.buffer[len(p.buffer)-1]
 	if _, ok := byteMap2[b]; !ok {
 		return nil
 	}
 	idx := byteMap2[b]
-	p.Buffer = p.Buffer[:idx]
+	p.buffer = p.buffer[:idx]
 
 	return nil
+}
+
+func (p *ISO10126) Name() string {
+	return p.name
 }

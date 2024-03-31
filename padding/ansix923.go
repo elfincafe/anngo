@@ -6,53 +6,49 @@ import (
 )
 
 type ANSIX923 struct {
-	paddingBase
+	name   string
+	buffer []byte
 }
 
-func NewAnsiX923(buffer []byte, blockSize int) *ANSIX923 {
+func NewAnsiX923(buffer []byte) *ANSIX923 {
 	p := new(ANSIX923)
-	copy(p.Buffer, buffer)
-	p.BlockSize = blockSize
+	copy(p.buffer, buffer)
 	return p
 }
 
-func (p *ANSIX923) Pad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *ANSIX923) Pad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
 	// Padding
-	b := p.Buffer[len(p.Buffer)-1]
+	b := p.buffer[len(p.buffer)-1]
 	if _, ok := byteMap2[b]; !ok {
 		return nil
 	}
 	pad := append(bytes.Repeat([]byte{0x00}, size-1), b)
-	p.Buffer = append(p.Buffer, pad...)
+	p.buffer = append(p.buffer, pad...)
 	return nil
 }
 
-func (p *ANSIX923) Unpad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *ANSIX923) Unpad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
 	// Unpadding
-	b := p.Buffer[len(p.Buffer)-1]
+	b := p.buffer[len(p.buffer)-1]
 	unpad := append(bytes.Repeat([]byte{0x00}, size-1), b)
-	idx := bytes.Index(p.Buffer, unpad)
+	idx := bytes.Index(p.buffer, unpad)
 	if idx == -1 {
 		return fmt.Errorf(`Padding isn't ANSI X932`)
 	}
-	p.Buffer = p.Buffer[:idx]
+	p.buffer = p.buffer[:idx]
 	return nil
+}
+
+func (p *ANSIX923) Name() string {
+	return p.name
 }

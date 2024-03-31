@@ -2,53 +2,48 @@ package padding
 
 import (
 	"bytes"
-	"fmt"
 )
 
 type PKCS7 struct {
-	paddingBase
+	name   string
+	buffer []byte
 }
 
-func NewPkcs7(buffer []byte, blockSize int) *PKCS7 {
+func NewPkcs7(buffer []byte) *PKCS7 {
 	p := new(PKCS7)
-	copy(p.Buffer, buffer)
-	p.BlockSize = blockSize
+	copy(p.buffer, buffer)
 	return p
 }
 
-func (p *PKCS7) Pad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *PKCS7) Pad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
 	// Padding
 	pad := bytes.Repeat([]byte{byteMap1[size]}, size)
-	p.Buffer = append(p.Buffer, pad...)
+	p.buffer = append(p.buffer, pad...)
 
 	return nil
 }
 
-func (p *PKCS7) Unpad() error {
-	// Block Size
-	if isValidBlockSize(p.BlockSize) {
-		return fmt.Errorf(`Invalid block size "%d".`, p.BlockSize)
-	}
+func (p *PKCS7) Unpad(BlockSize int) error {
 	// Padding Size
-	size := paddingLength(p.BlockSize, len(p.Buffer))
+	size := paddingLength(BlockSize, len(p.buffer))
 	if size == 0 {
 		return nil
 	}
 	// Unpadding
-	b := p.Buffer[len(p.Buffer)-1]
+	b := p.buffer[len(p.buffer)-1]
 	if _, ok := byteMap2[b]; !ok {
 		return nil
 	}
-	idx := bytes.Index(p.Buffer, bytes.Repeat([]byte{b}, size))
-	p.Buffer = p.Buffer[:idx]
+	idx := bytes.Index(p.buffer, bytes.Repeat([]byte{b}, size))
+	p.buffer = p.buffer[:idx]
 	return nil
+}
+
+func (p *PKCS7) Name() string {
+	return p.name
 }
