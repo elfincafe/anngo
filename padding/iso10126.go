@@ -12,6 +12,7 @@ type ISO10126 struct {
 
 func NewIso10126(buffer []byte) *ISO10126 {
 	p := new(ISO10126)
+	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
 }

@@ -12,6 +12,7 @@ type ANSIX923 struct {
 
 func NewAnsiX923(buffer []byte) *ANSIX923 {
 	p := new(ANSIX923)
+	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
 }

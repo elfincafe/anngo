@@ -28,11 +28,13 @@ type Padding interface {
 }
 
 func paddingLength(blockSize, length int) int {
-	size := int(blockSize / 8)
-	if length == 0 || length == size {
+	blockBytes := int(blockSize / 8)
+	if length == 0 {
 		return 0
-	} else if length < size {
-		return size - length
 	}
-	return (size - length%size)
+	rest := length % blockBytes
+	if rest == 0 {
+		return 0
+	}
+	return blockBytes - length%blockBytes
 }

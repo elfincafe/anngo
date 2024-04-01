@@ -2,6 +2,7 @@ package padding
 
 import (
 	"bytes"
+	"errors"
 )
 
 type Zero struct {
@@ -11,6 +12,7 @@ type Zero struct {
 
 func NewZero(buffer []byte) *Zero {
 	p := new(Zero)
+	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
 }
@@ -28,30 +30,21 @@ func (p *Zero) Pad(BlockSize int) ([]byte, error) {
 }
 
 func (p *Zero) Unpad(BlockSize int) ([]byte, error) {
-	/*
-		byteSize = int(BlockSize / 8)
-		size = len(buffer) % int(BlockSize / 8)
-		buffer[size:]
-		157 - 9 * 16 = 13
-		9 * 16
-		star  = int(length/BlockSize/8)
-		Length: 33
-		BlockSize: 16
-		Shou: 2
-		Rest: 1
-	*/
-	// Target
-	idx := len(p.buffer) - len(p.buffer)%int(BlockSize/8) - 1
-	target := p.buffer[idx:]
-
+	blockBytes := BlockSize / 8
+	length := len(p.buffer)
+	if length%blockBytes != 0 {
+		return nil, errors.New("byte size mismatch")
+	}
 	// Unpadding
-	for i := len(p.buffer) - 1; i >= 0; i-- {
+	idx := length - 1
+	limit := length - blockBytes + 1
+	for i := len(p.buffer) - 1; i >= limit; i-- {
 		if p.buffer[i] != 0x00 {
-			idx = i
+			idx = i + 1
+			break
 		}
 	}
-	p.buffer = p.buffer[:idx]
-	return p.buffer, nil
+	return p.buffer[:idx], nil
 }
 
 func (p *Zero) Name() string {

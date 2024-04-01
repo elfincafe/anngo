@@ -12,6 +12,7 @@ type PKCS7 struct {
 
 func NewPkcs7(buffer []byte) *PKCS7 {
 	p := new(PKCS7)
+	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
 }
