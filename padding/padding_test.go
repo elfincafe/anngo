@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+var (
+	s = "jS*1g-5_0kfaLz[w3U7rNQC)}XVu$^c#%9.sbTmDER+dMYKp(ZW62iyHAo@F,|lI]&q~8OePBnJh/Gvt!4{x"
+)
+
 func TestPaddingLength(t *testing.T) {
 	cases := []struct {
 		blockSize int

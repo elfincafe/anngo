@@ -21,24 +21,25 @@ type AES struct {
 	mode      *mode.Mode
 }
 
-func newAes(password []byte, blockSize int) *AES {
+func newAes(key []byte, blockSize int) *AES {
 	aes := new(AES)
 	aes.blockSize = blockSize
+	aes.key = key
 	return aes
 }
 
-func NewAes128(password []byte) *AES {
-	aes := newAes(password, BlockSize128)
+func NewAes128(key []byte) *AES {
+	aes := newAes(key, BlockSize128)
 	return aes
 }
 
-func NewAes192(password []byte) *AES {
-	aes := newAes(password, BlockSize192)
+func NewAes192(key []byte) *AES {
+	aes := newAes(key, BlockSize192)
 	return aes
 }
 
-func NewAes256(password []byte) *AES {
-	aes := newAes(password, BlockSize256)
+func NewAes256(key []byte) *AES {
+	aes := newAes(key, BlockSize256)
 	return aes
 }
 
@@ -67,4 +68,18 @@ func Generate(blockSize int) []byte {
 		return []byte{}
 	}
 	return b
+}
+
+func Resize(value []byte, blockSize int) []byte {
+	blockByte := blockSize / 8
+	buf := make([]byte, blockByte)
+	for k, v := range value {
+		idx := k % blockByte
+		buf[idx] ^= v
+	}
+	// for _, v := range buf {
+	// 	fmt.Printf("0x%02x, ", v)
+	// }
+	// println("")
+	return buf
 }

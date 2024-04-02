@@ -2,7 +2,6 @@ package padding
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -16,7 +15,6 @@ func TestNewZero(t *testing.T) {
 	for k, v := range cases {
 		p := NewZero([]byte{})
 		typ := reflect.TypeOf(p).String()
-		fmt.Println(typ)
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k, typ, v.typ)
 		}
@@ -24,6 +22,7 @@ func TestNewZero(t *testing.T) {
 }
 
 func TestZeroPad(t *testing.T) {
+	b := []byte("K-*j,%Zosz_wq^{)fvL}1iYS0GJOBaIr@WU|heHl!2PX9mkTp7(y+~Q/]6&5NxgtFR[EM$.bA3Du8nd4cC#V")
 	cases := []struct {
 		blockSize int
 		buffer    []byte
@@ -31,23 +30,23 @@ func TestZeroPad(t *testing.T) {
 	}{
 		{
 			128,
-			[]byte("0123456789abcdef"),
-			[]byte("0123456789abcdef"),
+			b[0:16],
+			b[0:16],
 		},
 		{
 			128,
-			[]byte("0123456789abcdef0123456789abcdef"),
-			[]byte("0123456789abcdef0123456789abcdef"),
+			b[0:32],
+			b[0:32],
 		},
 		{
 			128,
-			[]byte("0123456789abcdefg"),
-			append([]byte("0123456789abcdefg"), bytes.Repeat([]byte{0x00}, 15)...),
+			b[30:47],
+			append(b[30:47], bytes.Repeat([]byte{0x00}, 15)...),
 		},
 		{
 			128,
-			[]byte("0123456789abcde"),
-			append([]byte("0123456789abcde"), byte(0x00)),
+			b[50:65],
+			append(b[50:65], byte(0x00)),
 		},
 		{
 			192,
@@ -100,6 +99,7 @@ func TestZeroPad(t *testing.T) {
 }
 
 func TestZeroUnpad(t *testing.T) {
+	b := []byte(",}[#P1y*]k.~B3nC5DbM(fWGF|6S)zOU^_wJ2A%pmoNv&EhsqZV@u{Q0-TR$Ix87i/HXr+g!cKa4ldYLt9je")
 	cases := []struct {
 		bit    int
 		buf    []byte
