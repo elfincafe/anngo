@@ -22,76 +22,31 @@ func TestNewZero(t *testing.T) {
 }
 
 func TestZeroPad(t *testing.T) {
-	b := []byte("K-*j,%Zosz_wq^{)fvL}1iYS0GJOBaIr@WU|heHl!2PX9mkTp7(y+~Q/]6&5NxgtFR[EM$.bA3Du8nd4cC#V")
+	b := []byte("cM7U#fNe4ug9q1Y*pzn@tS3Q,yA$L%V~Or{Gv5Z2.d]slKWI^j0X&!8km)B_FDo-C/waHbhRPTx|E}+J(6[i")
 	cases := []struct {
-		blockSize int
-		buffer    []byte
-		expected  []byte
+		buffer   []byte
+		expected []byte
 	}{
 		{
-			128,
-			b[0:16],
-			b[0:16],
+			b[:16],
+			b[:16],
 		},
 		{
-			128,
-			b[0:32],
-			b[0:32],
+			b[:32],
+			b[:32],
 		},
 		{
-			128,
-			b[30:47],
-			append(b[30:47], bytes.Repeat([]byte{0x00}, 15)...),
+			b[:62],
+			append(b[:62], bytes.Repeat([]byte{0x00}, 2)...),
 		},
 		{
-			128,
-			b[50:65],
-			append(b[50:65], byte(0x00)),
-		},
-		{
-			192,
-			[]byte("0123456789abcdefghijklmn"),
-			[]byte("0123456789abcdefghijklmn"),
-		},
-		{
-			192,
-			[]byte("0123456789abcdefghijklmn0123456789abcdefghijklmn"),
-			[]byte("0123456789abcdefghijklmn0123456789abcdefghijklmn"),
-		},
-		{
-			192,
-			[]byte("0123456789abcdefghijklmn0"),
-			append([]byte("0123456789abcdefghijklmn0"), bytes.Repeat([]byte{0x00}, 23)...),
-		},
-		{
-			192,
-			[]byte("0123456789abcdefghijklmn0123456789abcdefghijklm"),
-			append([]byte("0123456789abcdefghijklmn0123456789abcdefghijklm"), byte(0x00)),
-		},
-		{
-			256,
-			[]byte("0123456789abcdefghijklmnopqrstuv"),
-			[]byte("0123456789abcdefghijklmnopqrstuv"),
-		},
-		{
-			256,
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstuv"),
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstuv"),
-		},
-		{
-			256,
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstuvw"),
-			append([]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstuvw"), bytes.Repeat([]byte{0x00}, 31)...),
-		},
-		{
-			256,
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstu"),
-			append([]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstu"), byte(0x00)),
+			b[:79],
+			append(b[:63], bytes.Repeat([]byte{0x00}, 1)...),
 		},
 	}
 	for k, v := range cases {
 		p := NewZero(v.buffer)
-		b, _ := p.Pad(v.blockSize)
+		b, _ := p.Pad()
 		if !bytes.Equal(b, v.expected) {
 			t.Errorf(`[Case%d] %v (%v)`, k, b, v.expected)
 		}
@@ -99,76 +54,31 @@ func TestZeroPad(t *testing.T) {
 }
 
 func TestZeroUnpad(t *testing.T) {
-	b := []byte(",}[#P1y*]k.~B3nC5DbM(fWGF|6S)zOU^_wJ2A%pmoNv&EhsqZV@u{Q0-TR$Ix87i/HXr+g!cKa4ldYLt9je")
+	b := []byte("DK-(n#t8/EXN7.dqF5,mc1@h{CUekbMI*2iB^ur!fw%}vJH)46+y~[Q$_ZRVTS9]Y0jGzpxW3s&Oa|AoglPL")
 	cases := []struct {
-		bit    int
 		buf    []byte
 		expect []byte
 	}{
 		{
-			128,
-			bytes.Repeat([]byte("0123456789abcdef"), 1),
-			bytes.Repeat([]byte("0123456789abcdef"), 1),
+			b[:16],
+			b[:16],
 		},
 		{
-			128,
-			bytes.Repeat([]byte("0123456789abcdef"), 2),
-			bytes.Repeat([]byte("0123456789abcdef"), 2),
+			b[:32],
+			b[:32],
 		},
 		{
-			128,
-			append([]byte("0123456789abcdef0123456789abcd"), byte(0x00), byte(0x00)),
-			[]byte("0123456789abcdef0123456789abcd"),
+			append(b[10:60], byte(0x00), byte(0x00)),
+			b[30:60],
 		},
 		{
-			128,
-			append([]byte("0123456789abcdef0123456789abcde"), byte(0x00)),
-			[]byte("0123456789abcdef0123456789abcde"),
-		},
-		{
-			192,
-			bytes.Repeat([]byte("0123456789abcdefghijklmn"), 1),
-			bytes.Repeat([]byte("0123456789abcdefghijklmn"), 1),
-		},
-		{
-			192,
-			bytes.Repeat([]byte("0123456789abcdefghijklmn"), 2),
-			bytes.Repeat([]byte("0123456789abcdefghijklmn"), 2),
-		},
-		{
-			192,
-			append([]byte("0123456789abcdefghijklmn0123456789abcdefghijkl"), byte(0x00), byte(0x00)),
-			[]byte("0123456789abcdefghijklmn0123456789abcdefghijkl"),
-		},
-		{
-			192,
-			append([]byte("0123456789abcdefghijklmn0123456789abcdefghijklm"), byte(0x00)),
-			[]byte("0123456789abcdefghijklmn0123456789abcdefghijklm"),
-		},
-		{
-			256,
-			bytes.Repeat([]byte("0123456789abcdefghijklmnopqrstuv"), 1),
-			bytes.Repeat([]byte("0123456789abcdefghijklmnopqrstuv"), 1),
-		},
-		{
-			256,
-			bytes.Repeat([]byte("0123456789abcdefghijklmnopqrstuv"), 2),
-			bytes.Repeat([]byte("0123456789abcdefghijklmnopqrstuv"), 2),
-		},
-		{
-			256,
-			append([]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrst"), byte(0x00), byte(0x00)),
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrst"),
-		},
-		{
-			256,
-			append([]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstu"), byte(0x00)),
-			[]byte("0123456789abcdefghijklmnopqrstuv0123456789abcdefghijklmnopqrstu"),
+			append(b[40:73], byte(0x00)),
+			b[40:73],
 		},
 	}
 	for k, v := range cases {
 		p := NewZero(v.buf)
-		res, _ := p.Unpad(v.bit)
+		res, _ := p.Unpad()
 		if !bytes.Equal(res, v.expect) {
 			t.Errorf("[Case%d] %v", k, res)
 		}

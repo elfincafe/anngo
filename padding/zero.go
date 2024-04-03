@@ -2,7 +2,9 @@ package padding
 
 import (
 	"bytes"
+	"crypto/aes"
 	"errors"
+	"fmt"
 )
 
 type Zero struct {
@@ -17,9 +19,13 @@ func NewZero(buffer []byte) *Zero {
 	return p
 }
 
-func (p *Zero) Pad(BlockSize int) ([]byte, error) {
+func (p *Zero) Pad() ([]byte, error) {
+	length := len(p.buffer)
+	if length%aes.BlockSize == 0 {
+		return p.buffer, nil
+	}
 	// Padding Size
-	size := paddingLength(BlockSize, len(p.buffer))
+	size := aes.BlockSize - len(p.buffer)%aes.BlockSize
 	if size == 0 {
 		return p.buffer, nil
 	}
@@ -29,21 +35,25 @@ func (p *Zero) Pad(BlockSize int) ([]byte, error) {
 	return p.buffer, nil
 }
 
-func (p *Zero) Unpad(BlockSize int) ([]byte, error) {
-	blockBytes := BlockSize / 8
+func (p *Zero) Unpad() ([]byte, error) {
 	length := len(p.buffer)
-	if length%blockBytes != 0 {
-		return nil, errors.New("byte size mismatch")
+	if length%aes.BlockSize != 0 {
+		return nil, errors.New("ciphertext is not a multiple of the block size")
+	}
+	size := aes.BlockSize - len(p.buffer)%aes.BlockSize
+	if size == 0 {
+		return p.buffer, nil
 	}
 	// Unpadding
+	limit := length - aes.BlockSize
 	idx := length - 1
-	limit := length - blockBytes + 1
-	for i := len(p.buffer) - 1; i >= limit; i-- {
+	for i := length - 1; i > limit; i-- {
 		if p.buffer[i] != 0x00 {
 			idx = i + 1
 			break
 		}
 	}
+	fmt.Println(idx)
 	return p.buffer[:idx], nil
 }
 

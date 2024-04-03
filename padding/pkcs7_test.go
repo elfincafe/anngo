@@ -21,9 +21,9 @@ func TestNewPkcs7(t *testing.T) {
 }
 
 func TestPkcs7Pad(t *testing.T) {
-	b := []byte("{[N+oM/hujgQ_eVD}i3Y#%a0H|q1z$8].W52OJ~mP@(&6)IByC!-ZFrXvAUnGbTLkl^4cs*dwt7SE9,RfpxK")
+	// b := []byte("{[N+oM/hujgQ_eVD}i3Y#%a0H|q1z$8].W52OJ~mP@(&6)IByC!-ZFrXvAUnGbTLkl^4cs*dwt7SE9,RfpxK")
 }
 
 func TestPkcs7Unpad(t *testing.T) {
-	b := []byte("sm_@BT4&ap^iJ)-bAHQLCZFc|PrS(nRG/Vg,!t375.]NXf${1[}hIe2l9ydE#+vzk0WKo8j~UOw%MYDxq6*u")
+	// b := []byte("sm_@BT4&ap^iJ)-bAHQLCZFc|PrS(nRG/Vg,!t375.]NXf${1[}hIe2l9ydE#+vzk0WKo8j~UOw%MYDxq6*u")
 }

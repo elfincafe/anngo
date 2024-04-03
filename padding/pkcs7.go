@@ -2,6 +2,7 @@ package padding
 
 import (
 	"bytes"
+	"crypto/aes"
 	"errors"
 )
 
@@ -17,9 +18,9 @@ func NewPkcs7(buffer []byte) *PKCS7 {
 	return p
 }
 
-func (p *PKCS7) Pad(BlockSize int) ([]byte, error) {
+func (p *PKCS7) Pad() ([]byte, error) {
 	// Padding Size
-	size := paddingLength(BlockSize, len(p.buffer))
+	size := paddingLength(aes.BlockSize, len(p.buffer))
 	if size == 0 {
 		return p.buffer, nil
 	}
@@ -30,9 +31,9 @@ func (p *PKCS7) Pad(BlockSize int) ([]byte, error) {
 	return p.buffer, nil
 }
 
-func (p *PKCS7) Unpad(BlockSize int) ([]byte, error) {
+func (p *PKCS7) Unpad() ([]byte, error) {
 	// Padding Size
-	size := paddingLength(BlockSize, len(p.buffer))
+	size := paddingLength(aes.BlockSize, len(p.buffer))
 	if size == 0 {
 		return p.buffer, nil
 	}
