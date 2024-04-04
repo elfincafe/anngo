@@ -93,9 +93,8 @@ func TestZeroName(t *testing.T) {
 	}
 	for k, v := range cases {
 		p := NewZero([]byte{})
-		name := p.Name()
-		if name == v.name {
-			t.Errorf(`[Case%d] %s (%s)`, k, name, v.name)
+		if p.Name() != v.name {
+			t.Errorf(`[Case%d] %s (%s)`, k, p.Name(), v.name)
 		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/aes"
 	"errors"
+	"fmt"
 )
 
 type PKCS7 struct {
@@ -13,38 +14,45 @@ type PKCS7 struct {
 
 func NewPkcs7(buffer []byte) *PKCS7 {
 	p := new(PKCS7)
+	p.name = "PKCS7"
 	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
 }
 
 func (p *PKCS7) Pad() ([]byte, error) {
-	// Padding Size
-	size := paddingLength(aes.BlockSize, len(p.buffer))
-	if size == 0 {
+	// check length
+	length := len(p.buffer)
+	if length%aes.BlockSize == 0 {
 		return p.buffer, nil
 	}
 	// Padding
-	pad := bytes.Repeat([]byte{byteMap1[size]}, size)
+	size := byte(aes.BlockSize - len(p.buffer)%aes.BlockSize)
+	pad := bytes.Repeat([]byte{size}, int(size))
 	p.buffer = append(p.buffer, pad...)
 
 	return p.buffer, nil
 }
 
 func (p *PKCS7) Unpad() ([]byte, error) {
-	// Padding Size
-	size := paddingLength(aes.BlockSize, len(p.buffer))
-	if size == 0 {
-		return p.buffer, nil
+	// check length
+	length := len(p.buffer)
+	if length%aes.BlockSize != 0 {
+		return nil, errors.New("ciphertext is not a multiple of the block size")
 	}
 	// Unpadding
 	b := p.buffer[len(p.buffer)-1]
-	if _, ok := byteMap2[b]; !ok {
-		return nil, errors.New("Can't find PKCS7 padding")
+	if b < 0x00 || b > 0x0f {
+		return p.buffer, nil
 	}
-	idx := bytes.Index(p.buffer, bytes.Repeat([]byte{b}, size))
-	p.buffer = p.buffer[:idx]
-	return p.buffer, nil
+	pattern := bytes.Repeat([]byte{b}, int(b))
+	s := length - int(b)
+	fmt.Println(p.buffer[s:])
+	if !bytes.Equal(p.buffer[s:], pattern) {
+		return nil, errors.New("ciphertext is not a invalid padding")
+	}
+
+	return p.buffer[:s], nil
 }
 
 func (p *PKCS7) Name() string {
