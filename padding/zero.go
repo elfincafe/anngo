@@ -37,23 +37,26 @@ func (p *Zero) Pad() ([]byte, error) {
 
 func (p *Zero) Unpad() ([]byte, error) {
 	length := len(p.buffer)
+	fmt.Printf("Length: %d\n", length)
 	if length%aes.BlockSize != 0 {
 		return nil, errors.New("ciphertext is not a multiple of the block size")
 	}
-	size := aes.BlockSize - len(p.buffer)%aes.BlockSize
-	if size == 0 {
-		return p.buffer, nil
-	}
+	// size := aes.BlockSize - len(p.buffer)%aes.BlockSize
+	// if size == 0 {
+	// 	return p.buffer, nil
+	// }
+	// fmt.Printf("Unpad: %d\n", size)
 	// Unpadding
-	limit := length - aes.BlockSize
-	idx := length - 1
+	limit := length - aes.BlockSize + 1
+	idx := limit + 1
+	fmt.Printf("Index: %d, Limit: %d\n", idx, limit)
 	for i := length - 1; i > limit; i-- {
 		if p.buffer[i] != 0x00 {
 			idx = i + 1
 			break
 		}
 	}
-	fmt.Println(idx)
+	// fmt.Println(idx)
 	return p.buffer[:idx], nil
 }
 

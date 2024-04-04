@@ -41,7 +41,7 @@ func TestZeroPad(t *testing.T) {
 		},
 		{
 			b[:79],
-			append(b[:63], bytes.Repeat([]byte{0x00}, 1)...),
+			append(b[:79], bytes.Repeat([]byte{0x00}, 1)...),
 		},
 	}
 	for k, v := range cases {
@@ -68,19 +68,19 @@ func TestZeroUnpad(t *testing.T) {
 			b[:32],
 		},
 		{
-			append(b[10:60], byte(0x00), byte(0x00)),
+			append(append([]byte(""), b[30:60]...), []byte{0x00, 0x00}...),
 			b[30:60],
 		},
 		{
-			append(b[40:73], byte(0x00)),
-			b[40:73],
+			append(append([]byte(""), b[40:73]...), []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}...),
+			append(append([]byte(""), b[40:73]...), []byte{0x00}...),
 		},
 	}
 	for k, v := range cases {
 		p := NewZero(v.buf)
 		res, _ := p.Unpad()
 		if !bytes.Equal(res, v.expect) {
-			t.Errorf("[Case%d] %v", k, res)
+			t.Errorf("[Case%d] %v (%v)", k, res, v.expect)
 		}
 	}
 }
