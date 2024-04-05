@@ -8,17 +8,17 @@ type ECB struct {
 	name string
 }
 
-func NewECB(p *padding.Padding) *ECB {
+func NewECB() *ECB {
 	m := new(ECB)
 	m.name = "ECB"
 	return m
 }
 
-func (m *ECB) Encrypt() ([]byte, error) {
+func (m *ECB) Encrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 
-func (m *ECB) Decrypt() ([]byte, error) {
+func (m *ECB) Decrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 

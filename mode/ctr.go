@@ -1,5 +1,7 @@
 package mode
 
+import "anngo/padding"
+
 type CTR struct {
 	name string
 }
@@ -10,11 +12,11 @@ func NewCTR() *CTR {
 	return m
 }
 
-func (m *CTR) Encrypt() ([]byte, error) {
+func (m *CTR) Encrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 
-func (m *CTR) Decrypt() ([]byte, error) {
+func (m *CTR) Decrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 

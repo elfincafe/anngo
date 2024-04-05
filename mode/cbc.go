@@ -1,5 +1,7 @@
 package mode
 
+import "anngo/padding"
+
 type CBC struct {
 	name string
 	iv   []byte
@@ -16,11 +18,11 @@ func (m *CBC) IV() []byte {
 	return m.iv
 }
 
-func (m *CBC) Encrypt() ([]byte, error) {
+func (m *CBC) Encrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 
-func (m *CBC) Decrypt() ([]byte, error) {
+func (m *CBC) Decrypt(p *padding.Padding) ([]byte, error) {
 	return nil, nil
 }
 

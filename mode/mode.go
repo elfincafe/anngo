@@ -1,7 +1,9 @@
 package mode
 
+import "anngo/padding"
+
 type Mode interface {
-	Encrypt() ([]byte, error)
-	Decrypt() ([]byte, error)
+	Encrypt(*padding.Padding) ([]byte, error)
+	Decrypt(*padding.Padding) ([]byte, error)
 	Name() string
 }
