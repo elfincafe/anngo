@@ -26,12 +26,12 @@ func (p *ANSIX923) Pad() ([]byte, error) {
 		return p.buffer, nil
 	}
 	// Padding
-	size := byte(aes.BlockSize - len(p.buffer)%aes.BlockSize)
+	size := byte(aes.BlockSize - length%aes.BlockSize)
 	pad := bytes.Repeat([]byte{0x00}, int(size-1))
 	pad = append(pad, size)
 	p.buffer = append(p.buffer, pad...)
 
-	return append(append([]byte{}, p.buffer...), pad...), nil
+	return p.buffer, nil
 }
 
 func (p *ANSIX923) Unpad() ([]byte, error) {
@@ -41,7 +41,17 @@ func (p *ANSIX923) Unpad() ([]byte, error) {
 		return nil, errors.New("ciphertext is not a multiple of the block size")
 	}
 	// Unpadding
-	return p.buffer, nil
+	b := p.buffer[len(p.buffer)-1]
+	if b > 0x0f {
+		return p.buffer, nil
+	}
+	pattern := append(bytes.Repeat([]byte{0x00}, int(b-1)), b)
+	s := length - int(b)
+	if !bytes.Equal(p.buffer[s:], pattern) {
+		return nil, errors.New("ciphertext is not a invalid padding")
+	}
+
+	return p.buffer[:s], nil
 }
 
 func (p *ANSIX923) Name() string {

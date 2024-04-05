@@ -26,7 +26,7 @@ func (p *Zero) Pad() ([]byte, error) {
 		return p.buffer, nil
 	}
 	// Padding
-	size := aes.BlockSize - len(p.buffer)%aes.BlockSize
+	size := aes.BlockSize - length%aes.BlockSize
 	pad := bytes.Repeat([]byte{0x00}, size)
 	p.buffer = append(p.buffer, pad...)
 
@@ -40,7 +40,7 @@ func (p *Zero) Unpad() ([]byte, error) {
 		return nil, errors.New("ciphertext is not a multiple of the block size")
 	}
 	// Unpadding
-	limit := length - aes.BlockSize + 1
+	limit := length - aes.BlockSize
 	idx := limit + 1
 	for i := length - 1; i > limit; i-- {
 		if p.buffer[i] != 0x00 {

@@ -6,14 +6,14 @@ import (
 	"testing"
 )
 
-func TestNewPkcs7(t *testing.T) {
+func TestNewIso10126(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"*padding.PKCS7"},
+		{"*padding.ISO10126"},
 	}
 	for k, v := range cases {
-		p := NewPkcs7([]byte{})
+		p := NewIso10126([]byte{})
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
@@ -21,8 +21,8 @@ func TestNewPkcs7(t *testing.T) {
 	}
 }
 
-func TestPkcs7Pad(t *testing.T) {
-	b := []byte("7&!kcs9g^@|f*URr23nFHiL}v-~C{j_W[dla,1uXNA)qIy(txSJ#V0BT8KZweYhb46Qmz%EGpP.D5$/Mo]+O")
+func TestIso10126Pad(t *testing.T) {
+	b := []byte("_-phFHaoey3wWxqm&2+fB5!.rsZn^Mb[G]IcTU|{@1Jgl%Rd,u*~jXVtP8}#CA$Sz7iD(06KLNOYv/k9EQ)4")
 	cases := []struct {
 		buffer   []byte
 		expected []byte
@@ -37,24 +37,25 @@ func TestPkcs7Pad(t *testing.T) {
 		},
 		{
 			b[:31],
-			append(append([]byte(""), b[:31]...), []byte{0x01}...),
+			append(append([]byte{}, b[:31]...), []byte{0x01}...),
 		},
 		{
-			b[:33],
-			append(append([]byte(""), b[:33]...), bytes.Repeat([]byte{0x0f}, 15)...),
+			b[:30],
+			append(append([]byte{}, b[:30]...), []byte{0x0a, 0x02}...),
 		},
 	}
 	for k, v := range cases {
-		p := NewPkcs7(v.buffer)
+		p := NewIso10126(v.buffer)
 		ret, _ := p.Pad()
-		if !bytes.Equal(ret, v.expected) {
+		length := len(v.buffer)
+		if !bytes.Equal(ret[:length], v.expected[:length]) || ret[length-1] != v.expected[length-1] {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
 		}
 	}
 }
 
-func TestPkcs7Unpad(t *testing.T) {
-	b := []byte("Owe5@F$0vV7/!}T-h#C%jucqMyYQH(42rBx6Zbi3,NzdPmt{L~Kp^]|WkGX.s+nlE_I[S*g&98RUAoD)a1fJ")
+func TestIso10126Unpad(t *testing.T) {
+	b := []byte("4wrbA,ICf$hn]}vH{z[1p*^a-6k0iBsF+Zc~gxLtlY@eGQM&yqNPKU5TW)_%8o9jSV3m|J.XD2E(!/u#dRO7")
 	cases := []struct {
 		buffer   []byte
 		expected []byte
@@ -72,12 +73,16 @@ func TestPkcs7Unpad(t *testing.T) {
 			b[:31],
 		},
 		{
-			append(append([]byte(""), b[:17]...), bytes.Repeat([]byte{0x0f}, 15)...),
-			b[:17],
+			append(append([]byte(""), b[:30]...), []byte{0xff, 0x02}...),
+			b[:30],
+		},
+		{
+			append(append([]byte(""), b[:40]...), []byte{0x00, 0xa1, 0x91, 0x5a, 0x22, 0xbe, 0xff, 0x08}...),
+			b[:40],
 		},
 	}
 	for k, v := range cases {
-		p := NewPkcs7(v.buffer)
+		p := NewIso10126(v.buffer)
 		ret, _ := p.Unpad()
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -85,14 +90,14 @@ func TestPkcs7Unpad(t *testing.T) {
 	}
 }
 
-func TestPkcs7Name(t *testing.T) {
+func TestIso10126Name(t *testing.T) {
 	cases := []struct {
 		name string
 	}{
-		{"PKCS7"},
+		{"ISO 10126"},
 	}
 	for k, v := range cases {
-		p := NewPkcs7([]byte(""))
+		p := NewIso10126([]byte(""))
 		if p.Name() != v.name {
 			t.Errorf("[Case%d] %s (%s)", k+1, p.Name(), v.name)
 		}

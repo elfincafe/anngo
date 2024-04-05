@@ -16,7 +16,7 @@ func TestNewZero(t *testing.T) {
 		p := NewZero([]byte{})
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
-			t.Errorf(`[Case%d] %s (%s)`, k, typ, v.typ)
+			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
 		}
 	}
 }
@@ -36,19 +36,19 @@ func TestZeroPad(t *testing.T) {
 			b[:32],
 		},
 		{
-			b[:62],
-			append(b[:62], bytes.Repeat([]byte{0x00}, 2)...),
+			b[:31],
+			append(append([]byte(""), b[:31]...), []byte{0x00}...),
 		},
 		{
-			b[:79],
-			append(b[:79], bytes.Repeat([]byte{0x00}, 1)...),
+			b[:33],
+			append(append([]byte(""), b[:33]...), bytes.Repeat([]byte{0x00}, 15)...),
 		},
 	}
 	for k, v := range cases {
 		p := NewZero(v.buffer)
 		b, _ := p.Pad()
 		if !bytes.Equal(b, v.expected) {
-			t.Errorf(`[Case%d] %v (%v)`, k, b, v.expected)
+			t.Errorf(`[Case%d] %v (%v)`, k+1, b, v.expected)
 		}
 	}
 }
@@ -56,8 +56,8 @@ func TestZeroPad(t *testing.T) {
 func TestZeroUnpad(t *testing.T) {
 	b := []byte("DK-(n#t8/EXN7.dqF5,mc1@h{CUekbMI*2iB^ur!fw%}vJH)46+y~[Q$_ZRVTS9]Y0jGzpxW3s&Oa|AoglPL")
 	cases := []struct {
-		buf    []byte
-		expect []byte
+		buf      []byte
+		expected []byte
 	}{
 		{
 			b[:16],
@@ -68,19 +68,23 @@ func TestZeroUnpad(t *testing.T) {
 			b[:32],
 		},
 		{
-			append(append([]byte(""), b[30:60]...), []byte{0x00, 0x00}...),
-			b[30:60],
+			append(append([]byte(""), b[:31]...), []byte{0x00}...),
+			b[:31],
 		},
 		{
-			append(append([]byte(""), b[40:73]...), []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}...),
-			append(append([]byte(""), b[40:73]...), []byte{0x00}...),
+			append(append([]byte(""), b[:17]...), bytes.Repeat([]byte{0x00}, 15)...),
+			b[:17],
+		},
+		{
+			append(append([]byte(""), b[:16]...), bytes.Repeat([]byte{0x00}, 16)...),
+			append(append([]byte(""), b[:16]...), bytes.Repeat([]byte{0x00}, 1)...),
 		},
 	}
 	for k, v := range cases {
 		p := NewZero(v.buf)
 		res, _ := p.Unpad()
-		if !bytes.Equal(res, v.expect) {
-			t.Errorf("[Case%d] %v (%v)", k, res, v.expect)
+		if !bytes.Equal(res, v.expected) {
+			t.Errorf("[Case%d] %v (%v)", k+1, res, v.expected)
 		}
 	}
 }
@@ -94,7 +98,7 @@ func TestZeroName(t *testing.T) {
 	for k, v := range cases {
 		p := NewZero([]byte{})
 		if p.Name() != v.name {
-			t.Errorf(`[Case%d] %s (%s)`, k, p.Name(), v.name)
+			t.Errorf(`[Case%d] %s (%s)`, k+1, p.Name(), v.name)
 		}
 	}
 }

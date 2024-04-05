@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/aes"
 	"errors"
-	"fmt"
 )
 
 type PKCS7 struct {
@@ -27,7 +26,7 @@ func (p *PKCS7) Pad() ([]byte, error) {
 		return p.buffer, nil
 	}
 	// Padding
-	size := byte(aes.BlockSize - len(p.buffer)%aes.BlockSize)
+	size := byte(aes.BlockSize - length%aes.BlockSize)
 	pad := bytes.Repeat([]byte{size}, int(size))
 	p.buffer = append(p.buffer, pad...)
 
@@ -42,12 +41,11 @@ func (p *PKCS7) Unpad() ([]byte, error) {
 	}
 	// Unpadding
 	b := p.buffer[len(p.buffer)-1]
-	if b < 0x00 || b > 0x0f {
+	if b > 0x0f {
 		return p.buffer, nil
 	}
 	pattern := bytes.Repeat([]byte{b}, int(b))
 	s := length - int(b)
-	fmt.Println(p.buffer[s:])
 	if !bytes.Equal(p.buffer[s:], pattern) {
 		return nil, errors.New("ciphertext is not a invalid padding")
 	}

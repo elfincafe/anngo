@@ -13,7 +13,7 @@ type ISO10126 struct {
 
 func NewIso10126(buffer []byte) *ISO10126 {
 	p := new(ISO10126)
-	p.name = "ISO10126"
+	p.name = "ISO 10126"
 	p.buffer = make([]byte, len(buffer))
 	copy(p.buffer, buffer)
 	return p
@@ -26,7 +26,7 @@ func (p *ISO10126) Pad() ([]byte, error) {
 		return p.buffer, nil
 	}
 	// Padding
-	size := byte(aes.BlockSize - len(p.buffer)%aes.BlockSize)
+	size := byte(aes.BlockSize - length%aes.BlockSize)
 	pad := make([]byte, size)
 	rand.Read(pad)
 	pad[int(size-1)] = size
@@ -42,7 +42,13 @@ func (p *ISO10126) Unpad() ([]byte, error) {
 		return nil, errors.New("ciphertext is not a multiple of the block size")
 	}
 	// Unpadding
-	return p.buffer, nil
+	b := p.buffer[len(p.buffer)-1]
+	if b > 0x0f {
+		return p.buffer, nil
+	}
+	s := length - int(b)
+
+	return p.buffer[:s], nil
 }
 
 func (p *ISO10126) Name() string {
