@@ -1,4 +1,4 @@
-package padding
+package anngo
 
 import (
 	"bytes"
@@ -10,10 +10,10 @@ func TestNewIso10126(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"*padding.ISO10126"},
+		{"*anngo.ISO10126"},
 	}
 	for k, v := range cases {
-		p := NewIso10126([]byte{})
+		p := NewIso10126()
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
@@ -45,8 +45,8 @@ func TestIso10126Pad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewIso10126(v.buffer)
-		ret, _ := p.Pad()
+		p := NewIso10126()
+		ret, _ := p.Pad(v.buffer)
 		length := len(v.buffer)
 		if !bytes.Equal(ret[:length], v.expected[:length]) || ret[length-1] != v.expected[length-1] {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -82,8 +82,8 @@ func TestIso10126Unpad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewIso10126(v.buffer)
-		ret, _ := p.Unpad()
+		p := NewIso10126()
+		ret, _ := p.Unpad(v.buffer)
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
 		}
@@ -97,7 +97,7 @@ func TestIso10126Name(t *testing.T) {
 		{"ISO 10126"},
 	}
 	for k, v := range cases {
-		p := NewIso10126([]byte(""))
+		p := NewIso10126()
 		if p.Name() != v.name {
 			t.Errorf("[Case%d] %s (%s)", k+1, p.Name(), v.name)
 		}

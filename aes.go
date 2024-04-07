@@ -1,57 +1,34 @@
 package anngo
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
-
-	"anngo/mode"
-	"anngo/padding"
 )
 
 const (
-	KeyLength128 = 128
-	KeyLength192 = 192
-	KeyLength256 = 256
+	KeySize16 = 16
+	KeySize24 = 24
+	KeySize32 = 32
 )
 
-type AES struct {
-	buffer    []byte
-	key       []byte
-	keyLength int
-	mode      *mode.Mode
-}
-
-func newAes(key []byte, keyLength int, mode *mode.Mode) *AES {
-	aes := new(AES)
-	aes.keyLength = keyLength
-	aes.key = key
-	aes.mode = mode
-	return aes
-}
-
-func NewAes128(key []byte, mode *mode.Mode) *AES {
-	aes := newAes(key, KeyLength128, mode)
-	return aes
-}
-
-func NewAes192(key []byte, mode *mode.Mode) *AES {
-	aes := newAes(key, KeyLength192, mode)
-	return aes
-}
-
-func NewAes256(key []byte, mode *mode.Mode) *AES {
-	aes := newAes(key, KeyLength256, mode)
-	return aes
-}
-
-func (aes *AES) Encrypt(p *padding.Padding) ([]byte, error) {
-
-	return []byte{}, nil
-}
-
-func (aes *AES) Decrypt(p *padding.Padding) ([]byte, error) {
-
-	return []byte{}, nil
-}
+type (
+	Mode interface {
+		setBlock(cipher.Block)
+		encrypt([]byte) ([]byte, error)
+		decrypt([]byte) ([]byte, error)
+		Name() string
+	}
+	Padding interface {
+		Pad([]byte) ([]byte, error)
+		Unpad([]byte) ([]byte, error)
+		Name() string
+	}
+	AES struct {
+		mode    *Mode
+		padding *Padding
+	}
+)
 
 func Generate(size int) []byte {
 	b := make([]byte, size)
@@ -62,16 +39,34 @@ func Generate(size int) []byte {
 	return b
 }
 
-func Resize(value []byte, blockSize int) []byte {
-	blockByte := blockSize / 8
-	buf := make([]byte, blockByte)
+func Resize(value []byte, size int) []byte {
+	if size < 0 {
+		return value
+	}
+	buf := make([]byte, size)
 	for k, v := range value {
-		idx := k % blockByte
+		idx := k % size
 		buf[idx] ^= v
 	}
-	// for _, v := range buf {
-	// 	fmt.Printf("0x%02x, ", v)
-	// }
-	// println("")
 	return buf
+}
+
+func NewAes(key []byte, mode *Mode, padding *Padding) (*AES, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aes := new(AES)
+	aes.mode = mode
+	(*aes.mode).setBlock(block)
+	aes.padding = padding
+	return aes, nil
+}
+
+func (aes *AES) Encrypt(b []byte) ([]byte, error) {
+	return (*aes.mode).encrypt(b)
+}
+
+func (aes *AES) Decrypt(b []byte) ([]byte, error) {
+	return (*aes.mode).decrypt(b)
 }

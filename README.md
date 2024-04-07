@@ -1,3 +1,3 @@
-# AnnGo
+# Ann*Go
 
 ## License

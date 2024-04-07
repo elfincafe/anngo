@@ -1,4 +1,4 @@
-package padding
+package anngo
 
 import (
 	"bytes"
@@ -10,10 +10,10 @@ func TestNewZero(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"*padding.Zero"},
+		{"*anngo.Zero"},
 	}
 	for k, v := range cases {
-		p := NewZero([]byte{})
+		p := NewZero()
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
@@ -45,8 +45,8 @@ func TestZeroPad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewZero(v.buffer)
-		b, _ := p.Pad()
+		p := NewZero()
+		b, _ := p.Pad(v.buffer)
 		if !bytes.Equal(b, v.expected) {
 			t.Errorf(`[Case%d] %v (%v)`, k+1, b, v.expected)
 		}
@@ -56,7 +56,7 @@ func TestZeroPad(t *testing.T) {
 func TestZeroUnpad(t *testing.T) {
 	b := []byte("DK-(n#t8/EXN7.dqF5,mc1@h{CUekbMI*2iB^ur!fw%}vJH)46+y~[Q$_ZRVTS9]Y0jGzpxW3s&Oa|AoglPL")
 	cases := []struct {
-		buf      []byte
+		buffer   []byte
 		expected []byte
 	}{
 		{
@@ -81,8 +81,8 @@ func TestZeroUnpad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewZero(v.buf)
-		res, _ := p.Unpad()
+		p := NewZero()
+		res, _ := p.Unpad(v.buffer)
 		if !bytes.Equal(res, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, res, v.expected)
 		}
@@ -96,7 +96,7 @@ func TestZeroName(t *testing.T) {
 		{"Zero"},
 	}
 	for k, v := range cases {
-		p := NewZero([]byte{})
+		p := NewZero()
 		if p.Name() != v.name {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, p.Name(), v.name)
 		}
