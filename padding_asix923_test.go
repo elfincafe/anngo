@@ -10,10 +10,10 @@ func TestNewAnsiX923(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"*anngo.AnsiX923"},
+		{"anngo.AnsiX923"},
 	}
 	for k, v := range cases {
-		p := NewAnsiX923()
+		p := NewANSIX923()
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
@@ -45,7 +45,7 @@ func TestAnsiX923Pad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewAnsiX923()
+		p := NewANSIX923()
 		ret, _ := p.Pad(v.buffer)
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -73,7 +73,7 @@ func TestAnsiX923Unpad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewAnsiX923()
+		p := NewANSIX923()
 		ret, _ := p.Unpad(v.buffer)
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -88,7 +88,7 @@ func TestAnsiX923Name(t *testing.T) {
 		{"ANSI X9.23"},
 	}
 	for k, v := range cases {
-		p := NewAnsiX923()
+		p := NewANSIX923()
 		if p.Name() != v.name {
 			t.Errorf("[Case%d] %s (%s)", k+1, p.Name(), v.name)
 		}

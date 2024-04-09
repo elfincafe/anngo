@@ -2,6 +2,9 @@ package anngo
 
 import (
 	"bytes"
+	"crypto/aes"
+	"fmt"
+	"os"
 	"testing"
 )
 
@@ -81,4 +84,32 @@ func TestResize(t *testing.T) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
 		}
 	}
+}
+
+func Test(t *testing.T) {
+
+	iv := Generate(aes.BlockSize) /* Initial Vector */
+	key := Resize([]byte("Ann*Go/Example/Key"), aes.BlockSize)
+
+	aes, err := NewAes(key, NewCBC(iv), NewPKCS7())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s", err)
+		os.Exit(1)
+	}
+
+	// Encrypt
+	cipherText, err := aes.Encrypt([]byte("plain_text"))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s", err)
+		os.Exit(1)
+	}
+	fmt.Println(cipherText)
+
+	// Decrypt
+	plainText, err := aes.Decrypt(cipherText)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s", err)
+		os.Exit(1)
+	}
+	fmt.Println(plainText)
 }

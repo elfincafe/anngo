@@ -4,29 +4,30 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-)
-
-const (
-	KeySize16 = 16
-	KeySize24 = 24
-	KeySize32 = 32
+	"fmt"
 )
 
 type (
-	Mode interface {
-		setBlock(cipher.Block)
-		encrypt([]byte) ([]byte, error)
-		decrypt([]byte) ([]byte, error)
+	IPadding interface {
 		Name() string
-	}
-	Padding interface {
 		Pad([]byte) ([]byte, error)
 		Unpad([]byte) ([]byte, error)
+	}
+	IMode interface {
 		Name() string
+		encrypt([]byte) ([]byte, error)
+		decrypt([]byte) ([]byte, error)
+		setBlock(cipher.Block)
+		setPadding(IPadding)
+	}
+	Mode struct {
+		name    string
+		iv      []byte
+		block   cipher.Block
+		padding *IPadding
 	}
 	AES struct {
-		mode    *Mode
-		padding *Padding
+		mode *IMode
 	}
 )
 
@@ -51,22 +52,24 @@ func Resize(value []byte, size int) []byte {
 	return buf
 }
 
-func NewAes(key []byte, mode *Mode, padding *Padding) (*AES, error) {
+func NewAes(key []byte, mode IMode, padding IPadding) (*AES, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
+	mode.setBlock(block)
+	mode.setPadding(padding)
 	aes := new(AES)
 	aes.mode = mode
-	(*aes.mode).setBlock(block)
-	aes.padding = padding
+	fmt.Println(mode)
 	return aes, nil
 }
 
 func (aes *AES) Encrypt(b []byte) ([]byte, error) {
-	return (*aes.mode).encrypt(b)
+	b, err := aes.mode.encrypt(b)
+	return b, err
 }
 
 func (aes *AES) Decrypt(b []byte) ([]byte, error) {
-	return (*aes.mode).decrypt(b)
+	return aes.mode.decrypt(b)
 }

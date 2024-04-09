@@ -10,10 +10,10 @@ func TestNewPkcs7(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"*anngo.PKCS7"},
+		{"anngo.PKCS7"},
 	}
 	for k, v := range cases {
-		p := NewPkcs7()
+		p := NewPKCS7()
 		typ := reflect.TypeOf(p).String()
 		if typ != v.typ {
 			t.Errorf(`[Case%d] %s (%s)`, k+1, typ, v.typ)
@@ -45,7 +45,7 @@ func TestPkcs7Pad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewPkcs7()
+		p := NewPKCS7()
 		ret, _ := p.Pad(v.buffer)
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -77,7 +77,7 @@ func TestPkcs7Unpad(t *testing.T) {
 		},
 	}
 	for k, v := range cases {
-		p := NewPkcs7()
+		p := NewPKCS7()
 		ret, _ := p.Unpad(v.buffer)
 		if !bytes.Equal(ret, v.expected) {
 			t.Errorf("[Case%d] %v (%v)", k+1, ret, v.expected)
@@ -92,7 +92,7 @@ func TestPkcs7Name(t *testing.T) {
 		{"PKCS7"},
 	}
 	for k, v := range cases {
-		p := NewPkcs7()
+		p := NewPKCS7()
 		if p.Name() != v.name {
 			t.Errorf("[Case%d] %s (%s)", k+1, p.Name(), v.name)
 		}

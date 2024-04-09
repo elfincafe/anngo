@@ -5,17 +5,22 @@ import (
 	"errors"
 )
 
-type Zero struct {
+type ZERO struct {
 	name string
 }
 
-func NewZero() *Zero {
-	p := new(Zero)
-	p.name = "Zero"
+func NewZERO() ZERO {
+	p := ZERO{
+		name: "ZERO",
+	}
 	return p
 }
 
-func (p *Zero) Pad(b []byte) ([]byte, error) {
+func (p ZERO) Name() string {
+	return p.name
+}
+
+func (p ZERO) Pad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize == 0 {
@@ -29,7 +34,7 @@ func (p *Zero) Pad(b []byte) ([]byte, error) {
 	return buffer, nil
 }
 
-func (p *Zero) Unpad(b []byte) ([]byte, error) {
+func (p ZERO) Unpad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize != 0 {
@@ -46,8 +51,4 @@ func (p *Zero) Unpad(b []byte) ([]byte, error) {
 	}
 
 	return b[:idx], nil
-}
-
-func (p *Zero) Name() string {
-	return p.name
 }

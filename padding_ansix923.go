@@ -10,13 +10,18 @@ type ANSIX923 struct {
 	name string
 }
 
-func NewAnsiX923() *ANSIX923 {
-	p := new(ANSIX923)
-	p.name = "ANSI X9.23"
+func NewANSIX923() ANSIX923 {
+	p := ANSIX923{
+		name: "ANSI X9.23",
+	}
 	return p
 }
 
-func (p *ANSIX923) Pad(b []byte) ([]byte, error) {
+func (p ANSIX923) Name() string {
+	return p.name
+}
+
+func (p ANSIX923) Pad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize == 0 {
@@ -31,7 +36,7 @@ func (p *ANSIX923) Pad(b []byte) ([]byte, error) {
 	return buffer, nil
 }
 
-func (p *ANSIX923) Unpad(b []byte) ([]byte, error) {
+func (p ANSIX923) Unpad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize != 0 {
@@ -49,8 +54,4 @@ func (p *ANSIX923) Unpad(b []byte) ([]byte, error) {
 	}
 
 	return b[:s], nil
-}
-
-func (p *ANSIX923) Name() string {
-	return p.name
 }
