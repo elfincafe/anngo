@@ -1,22 +1,19 @@
 package anngo
 
-type none struct {
-	name string
-}
-
-func NewNone() none {
-	p := none{name: ""}
-	return p
-}
-
-func (p none) Pad(b []byte) ([]byte, error) {
-	return b, nil
-}
-
-func (p none) Unpad(b []byte) ([]byte, error) {
-	return b, nil
-}
+type (
+	none struct {
+		name string
+	}
+)
 
 func (p none) Name() string {
 	return ""
+}
+
+func (p none) Pad(v []byte) ([]byte, error) {
+	return v, nil
+}
+
+func (p none) Unpad(v []byte) ([]byte, error) {
+	return v, nil
 }

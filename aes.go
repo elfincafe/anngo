@@ -4,30 +4,22 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"fmt"
 )
 
 type (
-	IPadding interface {
+	Padding interface {
 		Name() string
 		Pad([]byte) ([]byte, error)
 		Unpad([]byte) ([]byte, error)
 	}
-	IMode interface {
-		Name() string
-		encrypt([]byte) ([]byte, error)
-		decrypt([]byte) ([]byte, error)
-		setBlock(cipher.Block)
-		setPadding(IPadding)
-	}
-	Mode struct {
-		name    string
-		iv      []byte
-		block   cipher.Block
-		padding *IPadding
+	Mode interface {
+		encrypt(cipher.Block, []byte) ([]byte, error)
+		decrypt(cipher.Block, []byte) ([]byte, error)
 	}
 	AES struct {
-		mode *IMode
+		block   cipher.Block
+		mode    Mode
+		padding Padding
 	}
 )
 
@@ -52,24 +44,30 @@ func Resize(value []byte, size int) []byte {
 	return buf
 }
 
-func NewAes(key []byte, mode IMode, padding IPadding) (*AES, error) {
+func NewAes(key []byte, mode Mode, padding Padding) (*AES, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-	mode.setBlock(block)
-	mode.setPadding(padding)
 	aes := new(AES)
+	aes.block = block
 	aes.mode = mode
-	fmt.Println(mode)
+	aes.padding = padding
 	return aes, nil
 }
 
-func (aes *AES) Encrypt(b []byte) ([]byte, error) {
-	b, err := aes.mode.encrypt(b)
-	return b, err
+func (a AES) Encrypt(v []byte) ([]byte, error) {
+	paddedText, err := a.padding.Pad(v)
+	if err != nil {
+		return nil, err
+	}
+	return a.mode.encrypt(a.block, paddedText)
 }
 
-func (aes *AES) Decrypt(b []byte) ([]byte, error) {
-	return aes.mode.decrypt(b)
+func (a AES) Decrypt(v []byte) ([]byte, error) {
+	plainText, err := a.mode.decrypt(a.block, v)
+	if err != nil {
+		return nil, err
+	}
+	return a.padding.Unpad(plainText)
 }

@@ -5,18 +5,17 @@ import (
 	"crypto/cipher"
 )
 
-type CTR struct {
-	Mode
-}
+type (
+	CTR struct {
+		name string
+		iv   []byte
+	}
+)
 
 func NewCTR(iv []byte) CTR {
 	m := CTR{
-		Mode{
-			name:    "CTR",
-			iv:      make([]byte, aes.BlockSize),
-			block:   nil,
-			padding: nil,
-		},
+		name: "CTR",
+		iv:   make([]byte, aes.BlockSize),
 	}
 	copy(m.iv, Resize(iv, aes.BlockSize))
 	return m
@@ -26,20 +25,13 @@ func (m CTR) Name() string {
 	return m.name
 }
 
-func (m CTR) setBlock(block cipher.Block) {
-	m.block = block
-}
-
-func (m CTR) setPadding(padding *IPadding) {
-}
-
-func (m CTR) encrypt(b []byte) ([]byte, error) {
-	stream := cipher.NewCTR(m.block, m.iv)
-	cipherText := make([]byte, len(b))
-	stream.XORKeyStream(cipherText, b)
+func (m CTR) encrypt(block cipher.Block, v []byte) ([]byte, error) {
+	stream := cipher.NewCTR(block, m.iv)
+	cipherText := make([]byte, len(v))
+	stream.XORKeyStream(cipherText, v)
 	return cipherText, nil
 }
 
-func (m CTR) decrypt(b []byte) ([]byte, error) {
-	return m.encrypt(b)
+func (m CTR) decrypt(block cipher.Block, v []byte) ([]byte, error) {
+	return m.encrypt(block, v)
 }

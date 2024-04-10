@@ -91,7 +91,7 @@ func Test(t *testing.T) {
 	iv := Generate(aes.BlockSize) /* Initial Vector */
 	key := Resize([]byte("Ann*Go/Example/Key"), aes.BlockSize)
 
-	aes, err := NewAes(key, NewCBC(iv), NewPKCS7())
+	aes, err := NewAes(key, NewCBC(iv))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s", err)
 		os.Exit(1)

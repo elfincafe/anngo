@@ -3,21 +3,19 @@ package anngo
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"fmt"
 )
 
-type CBC struct {
-	Mode
-}
+type (
+	CBC struct {
+		name string
+		iv   []byte
+	}
+)
 
 func NewCBC(iv []byte) CBC {
 	m := CBC{
-		Mode{
-			name:    "CBC",
-			iv:      make([]byte, aes.BlockSize),
-			block:   nil,
-			padding: nil,
-		},
+		name: "CBC",
+		iv:   make([]byte, aes.BlockSize),
 	}
 	copy(m.iv, Resize(iv, aes.BlockSize))
 	return m
@@ -27,36 +25,14 @@ func (m CBC) Name() string {
 	return m.name
 }
 
-func (m CBC) setBlock(block cipher.Block) {
-	m.block = block
-}
-
-func (m CBC) setPadding(padding IPadding) {
-	m.padding = padding
-	fmt.Println("setPadding: ", m.padding)
-}
-
-func (m CBC) encrypt(b []byte) ([]byte, error) {
-	fmt.Println("encrypt: ", m.padding)
-	paddedText, err := m.padding.Pad(b)
-	if err != nil {
-		return nil, err
-	}
-	cipherText := make([]byte, len(paddedText))
-	enc := cipher.NewCBCEncrypter(m.block, m.iv)
-	enc.CryptBlocks(cipherText, paddedText)
-
+func (m CBC) encrypt(block cipher.Block, v []byte) ([]byte, error) {
+	cipherText := make([]byte, len(v))
+	cipher.NewCBCEncrypter(block, m.iv).CryptBlocks(cipherText, v)
 	return cipherText, nil
 }
 
-func (m CBC) decrypt(b []byte) ([]byte, error) {
-	dec := cipher.NewCBCDecrypter(m.block, m.iv)
-	var paddedText []byte
-	dec.CryptBlocks(paddedText, b)
-	plainText, err := m.padding.Unpad(paddedText)
-	if err != nil {
-		return nil, err
-	}
-
+func (m CBC) decrypt(block cipher.Block, v []byte) ([]byte, error) {
+	plainText := make([]byte, len(v))
+	cipher.NewCBCDecrypter(block, m.iv).CryptBlocks(plainText, v)
 	return plainText, nil
 }
