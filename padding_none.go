@@ -6,6 +6,10 @@ type (
 	}
 )
 
+func newNone() none {
+	return none{name: ""}
+}
+
 func (p none) Name() string {
 	return ""
 }

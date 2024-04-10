@@ -49,11 +49,15 @@ func NewAes(key []byte, mode Mode, padding Padding) (*AES, error) {
 	if err != nil {
 		return nil, err
 	}
-	aes := new(AES)
-	aes.block = block
-	aes.mode = mode
-	aes.padding = padding
-	return aes, nil
+	a := new(AES)
+	a.block = block
+	a.mode = mode
+	if padding != nil {
+		a.padding = padding
+	} else {
+		a.padding = newNone()
+	}
+	return a, nil
 }
 
 func (a AES) Encrypt(v []byte) ([]byte, error) {
