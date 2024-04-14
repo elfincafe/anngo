@@ -26,7 +26,7 @@ func NewAesCbc(key, iv []byte) (*AES, error) {
 	}
 	copy(mode.iv, Resize(iv, aes.BlockSize))
 	aes := newAes(block, mode)
-	aes.Padding(NewPKCS7())
+	aes.Padding(NewPkcs7())
 	return aes, nil
 }
 
