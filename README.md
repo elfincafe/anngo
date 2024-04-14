@@ -7,8 +7,7 @@ Go has the crypto modules and this is an easy-to-use version of those modules.
 ## Install
     # go get github.com/elfincafe/anngo
 
-## Functions
-
+## Mode
 |No|Mode|Function|
 |-|-|-|
 |1|CBC|NewAesCbc(key, iv []byte)|
@@ -16,7 +15,7 @@ Go has the crypto modules and this is an easy-to-use version of those modules.
 |3|OFB|NewAesOfb(key, iv []byte)|
 |4|CTR|NewAesCtr(key, iv []byte)|
 
-## Paddings
+## Padding
 |No|Padding|Function|Note|
 |-|-|-|-|
 |1|PKCS7|NewPKCS7()|This is a default padding.|
@@ -35,7 +34,7 @@ import (
 func main() {
     iv := anngo.Generate(16) // Initial Vector
     key := anngo.Resize([]byte("Ann*Go/Example/Key"), 16)
-    aes, err := NewAesCbcMode(key, iv)
+    aes, err := NewAesCbc(key, iv)
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error: %s", err)
         os.Exit(1)
