@@ -13,7 +13,7 @@ type (
 	}
 )
 
-func NewAesOfbMode(key, iv []byte) (*AES, error) {
+func NewAesOfb(key, iv []byte) (*AES, error) {
 	var err error
 	block, err := aes.NewCipher(key)
 	if err != nil {
