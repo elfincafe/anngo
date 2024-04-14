@@ -18,10 +18,10 @@ Go has the crypto modules and this is an easy-to-use version of those modules.
 ## Padding
 |No|Padding|Function|Note|
 |-|-|-|-|
-|1|PKCS7|NewPKCS7()|This is a default padding.|
-|2|ANSI X9.23|NewANSIX923()|ANSI X9.23 padding.|
-|3|ISO 10126|NewISO10126()|ISO 10126 padding.|
-|4|Zero|NewZERO()|Padding with 0x00. Not Recommended. There is no guarantee that it will return to normal.|
+|1|PKCS7|NewPkcs7()|This is a default padding.|
+|2|ANSI X9.23|NewAnsiX923()|ANSI X9.23 padding.|
+|3|ISO 10126|NewIso10126()|ISO 10126 padding.|
+|4|Zero|NewZero()|Padding with 0x00. Not Recommended. There is no guarantee that it will return to normal.|
 
 ## Usage
 ```go
@@ -39,7 +39,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error: %s", err)
         os.Exit(1)
     }
-    aes.Padding(NewANSIX923())
+    aes.Padding(NewAnsiX923())
 
     // Encrypt
     cipherText, err := aes.Encrypt([]byte("plain_text"))

@@ -9,7 +9,7 @@ type ZERO struct {
 	name string
 }
 
-func NewZERO() ZERO {
+func NewZero() ZERO {
 	p := ZERO{
 		name: "ZERO",
 	}

@@ -10,7 +10,7 @@ type ISO10126 struct {
 	name string
 }
 
-func NewISO10126() ISO10126 {
+func NewIso10126() ISO10126 {
 	p := ISO10126{
 		name: "ISO10126",
 	}

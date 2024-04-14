@@ -11,7 +11,7 @@ type PKCS7 struct {
 	name string
 }
 
-func NewPKCS7() PKCS7 {
+func NewPkcs7() PKCS7 {
 	p := PKCS7{
 		name: "PKCS7",
 	}

@@ -10,7 +10,7 @@ type ANSIX923 struct {
 	name string
 }
 
-func NewANSIX923() ANSIX923 {
+func NewAnsiX923() ANSIX923 {
 	p := ANSIX923{
 		name: "ANSI X9.23",
 	}
