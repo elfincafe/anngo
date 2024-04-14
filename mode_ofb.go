@@ -7,31 +7,39 @@ import (
 
 type (
 	OFB struct {
-		name string
-		iv   []byte
+		name  string
+		block cipher.Block
+		iv    []byte
 	}
 )
 
-func NewOFB(iv []byte) OFB {
-	m := OFB{
-		name: "OFB",
-		iv:   make([]byte, aes.BlockSize),
+func NewAesOfbMode(key, iv []byte) (*AES, error) {
+	var err error
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	copy(m.iv, Resize(iv, aes.BlockSize))
-	return m
+	mode := OFB{
+		name:  "OFB",
+		block: block,
+		iv:    make([]byte, aes.BlockSize),
+	}
+	copy(mode.iv, Resize(iv, aes.BlockSize))
+	aes := newAes(block, mode)
+	return aes, nil
 }
 
 func (m OFB) Name() string {
 	return m.name
 }
 
-func (m OFB) encrypt(block cipher.Block, v []byte) ([]byte, error) {
-	stream := cipher.NewOFB(block, m.iv)
+func (m OFB) encrypt(v []byte) ([]byte, error) {
+	stream := cipher.NewOFB(m.block, m.iv)
 	cipherText := make([]byte, len(v))
 	stream.XORKeyStream(cipherText, v)
 	return cipherText, nil
 }
 
-func (m OFB) decrypt(block cipher.Block, v []byte) ([]byte, error) {
-	return m.encrypt(block, v)
+func (m OFB) decrypt(v []byte) ([]byte, error) {
+	return m.encrypt(v)
 }

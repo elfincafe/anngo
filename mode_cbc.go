@@ -7,32 +7,41 @@ import (
 
 type (
 	CBC struct {
-		name string
-		iv   []byte
+		name  string
+		block cipher.Block
+		iv    []byte
 	}
 )
 
-func NewCBC(iv []byte) CBC {
-	m := CBC{
-		name: "CBC",
-		iv:   make([]byte, aes.BlockSize),
+func NewAesCbcMode(key, iv []byte) (*AES, error) {
+	var err error
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	copy(m.iv, Resize(iv, aes.BlockSize))
-	return m
+	mode := CBC{
+		name:  "CBC",
+		block: block,
+		iv:    make([]byte, aes.BlockSize),
+	}
+	copy(mode.iv, Resize(iv, aes.BlockSize))
+	aes := newAes(block, mode)
+	aes.Padding(NewPKCS7())
+	return aes, nil
 }
 
 func (m CBC) Name() string {
 	return m.name
 }
 
-func (m CBC) encrypt(block cipher.Block, v []byte) ([]byte, error) {
+func (m CBC) encrypt(v []byte) ([]byte, error) {
 	cipherText := make([]byte, len(v))
-	cipher.NewCBCEncrypter(block, m.iv).CryptBlocks(cipherText, v)
+	cipher.NewCBCEncrypter(m.block, m.iv).CryptBlocks(cipherText, v)
 	return cipherText, nil
 }
 
-func (m CBC) decrypt(block cipher.Block, v []byte) ([]byte, error) {
+func (m CBC) decrypt(v []byte) ([]byte, error) {
 	plainText := make([]byte, len(v))
-	cipher.NewCBCDecrypter(block, m.iv).CryptBlocks(plainText, v)
+	cipher.NewCBCDecrypter(m.block, m.iv).CryptBlocks(plainText, v)
 	return plainText, nil
 }

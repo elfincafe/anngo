@@ -1,9 +1,21 @@
 package anngo
 
 import (
-	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+)
+
+const (
+	paddingNone     = 0
+	paddingPKCS7    = 1
+	paddingZERO     = 2
+	paddingANSIX923 = 3
+	paddingISO10126 = 4
+	modeEBC         = 1
+	modeCBC         = 2
+	modeCFB         = 3
+	modeOFB         = 4
+	modeCTR         = 5
 )
 
 type (
@@ -13,8 +25,9 @@ type (
 		Unpad([]byte) ([]byte, error)
 	}
 	Mode interface {
-		encrypt(cipher.Block, []byte) ([]byte, error)
-		decrypt(cipher.Block, []byte) ([]byte, error)
+		Name() string
+		encrypt([]byte) ([]byte, error)
+		decrypt([]byte) ([]byte, error)
 	}
 	AES struct {
 		block   cipher.Block
@@ -44,34 +57,40 @@ func Resize(value []byte, size int) []byte {
 	return buf
 }
 
-func NewAes(key []byte, mode Mode, padding Padding) (*AES, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
+func newAes(block cipher.Block, mode Mode) *AES {
 	a := new(AES)
 	a.block = block
 	a.mode = mode
-	if padding != nil {
-		a.padding = padding
+	a.padding = nil
+	return a
+}
+
+func (a *AES) Padding(padding Padding) {
+	a.padding = padding
+}
+
+func (a *AES) Encrypt(v []byte) ([]byte, error) {
+	var err error
+	var paddedText []byte
+
+	if a.padding != nil {
+		paddedText, err = a.padding.Pad(v)
+		if err != nil {
+			return nil, err
+		}
 	} else {
-		a.padding = newNone()
+		paddedText = v
 	}
-	return a, nil
+	return a.mode.encrypt(paddedText)
 }
 
-func (a AES) Encrypt(v []byte) ([]byte, error) {
-	paddedText, err := a.padding.Pad(v)
+func (a *AES) Decrypt(v []byte) ([]byte, error) {
+	plainText, err := a.mode.decrypt(v)
 	if err != nil {
 		return nil, err
 	}
-	return a.mode.encrypt(a.block, paddedText)
-}
-
-func (a AES) Decrypt(v []byte) ([]byte, error) {
-	plainText, err := a.mode.decrypt(a.block, v)
-	if err != nil {
-		return nil, err
+	if a.padding != nil {
+		return a.padding.Unpad(plainText)
 	}
-	return a.padding.Unpad(plainText)
+	return plainText, nil
 }

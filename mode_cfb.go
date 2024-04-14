@@ -7,33 +7,41 @@ import (
 
 type (
 	CFB struct {
-		name string
-		iv   []byte
+		name  string
+		block cipher.Block
+		iv    []byte
 	}
 )
 
-func NewCFB(iv []byte) CFB {
-	m := CFB{
-		name: "CFB",
-		iv:   make([]byte, aes.BlockSize),
+func NewAesCfbMode(key, iv []byte) (*AES, error) {
+	var err error
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	copy(m.iv, Resize(iv, aes.BlockSize))
-	return m
+	mode := CFB{
+		name:  "CFB",
+		block: block,
+		iv:    make([]byte, aes.BlockSize),
+	}
+	copy(mode.iv, Resize(iv, aes.BlockSize))
+	aes := newAes(block, mode)
+	return aes, nil
 }
 
 func (m CFB) Name() string {
 	return m.name
 }
 
-func (m CFB) encrypt(block cipher.Block, v []byte) ([]byte, error) {
-	stream := cipher.NewCFBEncrypter(block, m.iv)
+func (m CFB) encrypt(v []byte) ([]byte, error) {
+	stream := cipher.NewCFBEncrypter(m.block, m.iv)
 	cipherText := make([]byte, len(v))
 	stream.XORKeyStream(cipherText, v)
 	return cipherText, nil
 }
 
-func (m CFB) decrypt(block cipher.Block, v []byte) ([]byte, error) {
-	stream := cipher.NewCFBDecrypter(block, m.iv)
+func (m CFB) decrypt(v []byte) ([]byte, error) {
+	stream := cipher.NewCFBDecrypter(m.block, m.iv)
 	plainText := make([]byte, len(v))
 	stream.XORKeyStream(plainText, v)
 	return plainText, nil

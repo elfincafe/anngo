@@ -7,31 +7,39 @@ import (
 
 type (
 	CTR struct {
-		name string
-		iv   []byte
+		name  string
+		block cipher.Block
+		iv    []byte
 	}
 )
 
-func NewCTR(iv []byte) CTR {
-	m := CTR{
-		name: "CTR",
-		iv:   make([]byte, aes.BlockSize),
+func NewAesCtrMode(key, iv []byte) (*AES, error) {
+	var err error
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	copy(m.iv, Resize(iv, aes.BlockSize))
-	return m
+	mode := CTR{
+		name:  "CTR",
+		block: block,
+		iv:    make([]byte, aes.BlockSize),
+	}
+	copy(mode.iv, Resize(iv, aes.BlockSize))
+	aes := newAes(block, mode)
+	return aes, nil
 }
 
 func (m CTR) Name() string {
 	return m.name
 }
 
-func (m CTR) encrypt(block cipher.Block, v []byte) ([]byte, error) {
-	stream := cipher.NewCTR(block, m.iv)
+func (m CTR) encrypt(v []byte) ([]byte, error) {
+	stream := cipher.NewCTR(m.block, m.iv)
 	cipherText := make([]byte, len(v))
 	stream.XORKeyStream(cipherText, v)
 	return cipherText, nil
 }
 
-func (m CTR) decrypt(block cipher.Block, v []byte) ([]byte, error) {
-	return m.encrypt(block, v)
+func (m CTR) decrypt(v []byte) ([]byte, error) {
+	return m.encrypt(v)
 }
