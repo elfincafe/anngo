@@ -21,7 +21,7 @@ Go has the crypto modules and this is an easy-to-use version of those modules.
 |1|PKCS7|NewPKCS7()|This is a default padding.|
 |2|ANSI X9.23|NewANSIX923()|ANSI X9.23 padding.|
 |3|ISO 10126|NewISO10126()|ISO 10126 padding.|
-|4|Zero|NewZERO()|Padding with Null(0x00). Not Recommended. There is no guarantee that it will return to normal.|
+|4|Zero|NewZERO()|Padding with 0x00. Not Recommended. There is no guarantee that it will return to normal.|
 
 ## Usage
 ```go
