@@ -10,7 +10,7 @@ func TestNewPkcs7(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"anngo.PKCS7"},
+		{"*anngo.PKCS7"},
 	}
 	for k, v := range cases {
 		p := NewPkcs7()

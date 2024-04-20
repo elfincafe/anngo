@@ -10,7 +10,7 @@ func TestNewAnsiX923(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"anngo.AnsiX923"},
+		{"*anngo.ANSIX923"},
 	}
 	for k, v := range cases {
 		p := NewAnsiX923()

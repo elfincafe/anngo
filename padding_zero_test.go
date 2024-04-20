@@ -10,7 +10,7 @@ func TestNewZero(t *testing.T) {
 	cases := []struct {
 		typ string
 	}{
-		{"anngo.ZERO"},
+		{"*anngo.ZERO"},
 	}
 	for k, v := range cases {
 		p := NewZero()
