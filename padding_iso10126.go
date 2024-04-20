@@ -10,18 +10,20 @@ type ISO10126 struct {
 	name string
 }
 
-func NewIso10126() ISO10126 {
-	p := ISO10126{
-		name: "ISO10126",
-	}
+func NewIso10126() *ISO10126 {
+	// p := ISO10126{
+	// 	name: "ISO10126",
+	// }
+	p := new(ISO10126)
+	p.name = "ISO10126"
 	return p
 }
 
-func (p ISO10126) Name() string {
+func (p *ISO10126) Name() string {
 	return p.name
 }
 
-func (p ISO10126) Pad(b []byte) ([]byte, error) {
+func (p *ISO10126) Pad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize == 0 {
@@ -37,7 +39,7 @@ func (p ISO10126) Pad(b []byte) ([]byte, error) {
 	return buffer, nil
 }
 
-func (p ISO10126) Unpad(b []byte) ([]byte, error) {
+func (p *ISO10126) Unpad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize != 0 {

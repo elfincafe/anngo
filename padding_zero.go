@@ -9,18 +9,20 @@ type ZERO struct {
 	name string
 }
 
-func NewZero() ZERO {
-	p := ZERO{
-		name: "ZERO",
-	}
+func NewZero() *ZERO {
+	// p := ZERO{
+	// 	name: "ZERO",
+	// }
+	p := new(ZERO)
+	p.name = "ZERO"
 	return p
 }
 
-func (p ZERO) Name() string {
+func (p *ZERO) Name() string {
 	return p.name
 }
 
-func (p ZERO) Pad(b []byte) ([]byte, error) {
+func (p *ZERO) Pad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize == 0 {
@@ -34,7 +36,7 @@ func (p ZERO) Pad(b []byte) ([]byte, error) {
 	return buffer, nil
 }
 
-func (p ZERO) Unpad(b []byte) ([]byte, error) {
+func (p *ZERO) Unpad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize != 0 {

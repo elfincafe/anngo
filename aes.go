@@ -31,8 +31,8 @@ type (
 	}
 	AES struct {
 		block   cipher.Block
-		mode    Mode
-		padding Padding
+		mode    *Mode
+		padding *Padding
 	}
 )
 
@@ -60,13 +60,13 @@ func Resize(value []byte, size int) []byte {
 func newAes(block cipher.Block, mode Mode) *AES {
 	a := new(AES)
 	a.block = block
-	a.mode = mode
+	a.mode = &mode
 	a.padding = nil
 	return a
 }
 
 func (a *AES) Padding(padding Padding) {
-	a.padding = padding
+	a.padding = &padding
 }
 
 func (a *AES) Encrypt(v []byte) ([]byte, error) {
@@ -74,23 +74,23 @@ func (a *AES) Encrypt(v []byte) ([]byte, error) {
 	var paddedText []byte
 
 	if a.padding != nil {
-		paddedText, err = a.padding.Pad(v)
+		paddedText, err = (*a.padding).Pad(v)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		paddedText = v
 	}
-	return a.mode.encrypt(paddedText)
+	return (*a.mode).encrypt(paddedText)
 }
 
 func (a *AES) Decrypt(v []byte) ([]byte, error) {
-	plainText, err := a.mode.decrypt(v)
+	plainText, err := (*a.mode).decrypt(v)
 	if err != nil {
 		return nil, err
 	}
 	if a.padding != nil {
-		return a.padding.Unpad(plainText)
+		return (*a.padding).Unpad(plainText)
 	}
 	return plainText, nil
 }

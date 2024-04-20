@@ -11,18 +11,20 @@ type PKCS7 struct {
 	name string
 }
 
-func NewPkcs7() PKCS7 {
-	p := PKCS7{
-		name: "PKCS7",
-	}
+func NewPkcs7() *PKCS7 {
+	// p := PKCS7{
+	// 	name: "PKCS7",
+	// }
+	p := new(PKCS7)
+	p.name = "PKCS7"
 	return p
 }
 
-func (p PKCS7) Name() string {
+func (p *PKCS7) Name() string {
 	return p.name
 }
 
-func (p PKCS7) Pad(b []byte) ([]byte, error) {
+func (p *PKCS7) Pad(b []byte) ([]byte, error) {
 	fmt.Println("padding1")
 	// check length
 	length := len(b)
@@ -37,7 +39,7 @@ func (p PKCS7) Pad(b []byte) ([]byte, error) {
 	return buffer, nil
 }
 
-func (p PKCS7) Unpad(b []byte) ([]byte, error) {
+func (p *PKCS7) Unpad(b []byte) ([]byte, error) {
 	// check length
 	length := len(b)
 	if length%aes.BlockSize != 0 {
