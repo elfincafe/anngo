@@ -11,8 +11,8 @@ func TestNewAnsiX923(t *testing.T) {
 	v := reflect.TypeOf(p)
 	if v.Kind() != reflect.Pointer {
 		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Pointer)
-	} else if v.Elem().Name() != "AnsiX923" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "AnsiX923")
+	} else if v.Elem().Name() != "ANSIX923" {
+		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "ANSIX923")
 	}
 }
 
