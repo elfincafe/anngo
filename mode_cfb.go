@@ -1,6 +1,6 @@
 package anngo
 
-func NewCFB(key, iv []byte) *CFB {
+func NewCFB(key []byte, p PaddingInterface) *CFB {
 	m := new(CFB)
 	return m
 }

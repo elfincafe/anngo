@@ -1,6 +1,6 @@
 package anngo
 
-func NewCTR(key []byte) *CTR {
+func NewCTR(key []byte, p PaddingInterface) *CTR {
 	m := new(CTR)
 	return m
 }

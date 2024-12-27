@@ -1,8 +1,7 @@
 package anngo
 
-func NewCBC(key []byte, p PaddingInterface, iv []byte) *CBC {
+func NewCBC(key []byte, p PaddingInterface) *CBC {
 	m := new(CBC)
-	copy(m.iv, iv)
 	return m
 }
 

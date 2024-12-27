@@ -1,6 +1,6 @@
 package anngo
 
-func NewOFB(key, iv []byte) *OFB {
+func NewOFB(key []byte, p PaddingInterface) *OFB {
 	m := new(OFB)
 	return m
 }
