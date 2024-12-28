@@ -9,10 +9,10 @@ import (
 func TestNewZero(t *testing.T) {
 	p := NewZero()
 	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Pointer {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Pointer)
-	} else if v.Elem().Name() != "ZERO" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "ZERO")
+	if v.Kind() != reflect.Struct {
+		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
+	} else if v.Name() != "ZERO" {
+		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ZERO")
 	}
 }
 

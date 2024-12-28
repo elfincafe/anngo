@@ -3,6 +3,7 @@ package anngo
 import (
 	"crypto/aes"
 	"crypto/rand"
+	"fmt"
 )
 
 const (
@@ -56,4 +57,18 @@ func GenerateIV(size int) ([]byte, error) {
 	b := make([]byte, size)
 	_, err := rand.Read(b)
 	return b, err
+}
+
+func copyIV(d, s []byte) error {
+	length := len(s)
+	if len(d) < length {
+		return fmt.Errorf("destination is less than source")
+	}
+	if length == BlockSize {
+		copy(d, s)
+		return nil
+	} else {
+		return fmt.Errorf("IV size must be %d bytes", BlockSize)
+	}
+
 }

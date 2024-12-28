@@ -10,10 +10,10 @@ import (
 func TestNewIso10126(t *testing.T) {
 	p := NewIso10126()
 	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Pointer {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Pointer)
-	} else if v.Elem().Name() != "ISO10126" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "ISO10126")
+	if v.Kind() != reflect.Struct {
+		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
+	} else if v.Name() != "ISO10126" {
+		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ISO10126")
 	}
 }
 

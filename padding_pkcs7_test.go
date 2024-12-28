@@ -9,10 +9,10 @@ import (
 func TestNewPkcs7(t *testing.T) {
 	p := NewPkcs7()
 	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Pointer {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Pointer)
-	} else if v.Elem().Name() != "PKCS7" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "PKCS7")
+	if v.Kind() != reflect.Struct {
+		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
+	} else if v.Name() != "PKCS7" {
+		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "PKCS7")
 	}
 }
 

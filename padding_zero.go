@@ -5,12 +5,12 @@ import (
 	"bytes"
 )
 
-func NewZero() *ZERO {
-	p := new(ZERO)
+func NewZero() ZERO {
+	p := ZERO{}
 	return p
 }
 
-func (p *ZERO) Pad(s []byte) []byte {
+func (p ZERO) Pad(s []byte) []byte {
 	length := len(s)
 	count := BlockSize - length%BlockSize
 	if count >= BlockSize || count <= 0 {
@@ -21,7 +21,7 @@ func (p *ZERO) Pad(s []byte) []byte {
 	return append(s, padding...)
 }
 
-func (p *ZERO) Unpad(s []byte) []byte {
+func (p ZERO) Unpad(s []byte) []byte {
 	length := len(s)
 	count := length % BlockSize
 	if count != 0 || length == 0 {

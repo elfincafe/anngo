@@ -5,12 +5,12 @@ import (
 	"bytes"
 )
 
-func NewAnsiX923() *ANSIX923 {
-	p := new(ANSIX923)
+func NewAnsiX923() ANSIX923 {
+	p := ANSIX923{}
 	return p
 }
 
-func (p *ANSIX923) Pad(s []byte) []byte {
+func (p ANSIX923) Pad(s []byte) []byte {
 	length := len(s)
 	count := BlockSize - length%BlockSize
 	if count >= BlockSize || count <= 0 {
@@ -21,7 +21,7 @@ func (p *ANSIX923) Pad(s []byte) []byte {
 	return append(s, padding...)
 }
 
-func (p *ANSIX923) Unpad(s []byte) []byte {
+func (p ANSIX923) Unpad(s []byte) []byte {
 	length := len(s)
 	count := length % BlockSize
 	if count != 0 || length == 0 {

@@ -1,8 +1,10 @@
 package anngo
 
 func NewECB(key []byte, p PaddingInterface) *ECB {
-	m := new(ECB)
-	return m
+	aes := new(ECB)
+	aes.key = make([]byte, len(key))
+	copy(aes.key, key)
+	return aes
 }
 
 func (aes *ECB) Encrypt(s []byte) ([]byte, error) {

@@ -9,10 +9,10 @@ import (
 func TestNewAnsiX923(t *testing.T) {
 	p := NewAnsiX923()
 	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Pointer {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Pointer)
-	} else if v.Elem().Name() != "ANSIX923" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Elem().Name(), "ANSIX923")
+	if v.Kind() != reflect.Struct {
+		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
+	} else if v.Name() != "ANSIX923" {
+		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ANSIX923")
 	}
 }
 

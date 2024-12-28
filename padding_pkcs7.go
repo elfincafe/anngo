@@ -3,12 +3,12 @@ package anngo
 
 import "bytes"
 
-func NewPkcs7() *PKCS7 {
-	p := new(PKCS7)
+func NewPkcs7() PKCS7 {
+	p := PKCS7{}
 	return p
 }
 
-func (p *PKCS7) Pad(s []byte) []byte {
+func (p PKCS7) Pad(s []byte) []byte {
 	length := len(s)
 	count := BlockSize - length%BlockSize
 	if count >= BlockSize || count <= 0 {
@@ -19,7 +19,7 @@ func (p *PKCS7) Pad(s []byte) []byte {
 	return append(s, padding...)
 }
 
-func (p *PKCS7) Unpad(s []byte) []byte {
+func (p PKCS7) Unpad(s []byte) []byte {
 	length := len(s)
 	count := length % BlockSize
 	if count != 0 || length == 0 {

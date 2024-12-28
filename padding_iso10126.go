@@ -5,12 +5,12 @@ import (
 	"crypto/rand"
 )
 
-func NewIso10126() *ISO10126 {
-	p := new(ISO10126)
+func NewIso10126() ISO10126 {
+	p := ISO10126{}
 	return p
 }
 
-func (p *ISO10126) Pad(s []byte) []byte {
+func (p ISO10126) Pad(s []byte) []byte {
 	length := len(s)
 	count := BlockSize - length%BlockSize
 	if count >= BlockSize || count <= 0 {
@@ -24,7 +24,7 @@ func (p *ISO10126) Pad(s []byte) []byte {
 	return append(s, padding...)
 }
 
-func (p *ISO10126) Unpad(s []byte) []byte {
+func (p ISO10126) Unpad(s []byte) []byte {
 	length := len(s)
 	count := length % BlockSize
 	if count != 0 || length == 0 {
