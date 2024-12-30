@@ -2,6 +2,7 @@ package anngo
 
 import (
 	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"fmt"
 )
@@ -31,25 +32,30 @@ type (
 	ISO10126 struct {
 	}
 	ECB struct {
-		key []byte
-		p   PaddingInterface
+		key   []byte
+		block cipher.Block
+		p     PaddingInterface
 	}
 	CBC struct {
-		key []byte
-		p   PaddingInterface
-		iv  []byte
+		key   []byte
+		block cipher.Block
+		p     PaddingInterface
+		iv    []byte
 	}
 	CFB struct {
-		key []byte
-		iv  []byte
+		key   []byte
+		block cipher.Block
+		iv    []byte
 	}
 	OFB struct {
-		key []byte
-		iv  []byte
+		key   []byte
+		block cipher.Block
+		iv    []byte
 	}
 	CTR struct {
-		key []byte
-		iv  []byte
+		key   []byte
+		block cipher.Block
+		iv    []byte
 	}
 )
 
@@ -70,5 +76,4 @@ func copyIV(d, s []byte) error {
 	} else {
 		return fmt.Errorf("IV size must be %d bytes", BlockSize)
 	}
-
 }

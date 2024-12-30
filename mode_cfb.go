@@ -1,32 +1,63 @@
 package anngo
 
-import "crypto/rand"
+import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+)
 
 func NewCFB(key []byte) *CFB {
-	aes := new(CFB)
-	aes.key = make([]byte, len(key))
-	copy(aes.key, key)
-	aes.iv = make([]byte, BlockSize)
-	rand.Read(aes.iv)
-	return aes
+	m := new(CFB)
+	m.key = make([]byte, len(key))
+	copy(m.key, key)
+	m.iv = make([]byte, BlockSize)
+	rand.Read(m.iv)
+	return m
 }
 
-func (aes *CFB) Encrypt(s []byte) ([]byte, error) {
-	var err error
-	d := []byte{}
-	return d, err
+func (m *CFB) createBlock() error {
+	if m.block != nil {
+		return nil
+	}
+	block, err := aes.NewCipher(m.key)
+	if err != nil {
+		return err
+	}
+	m.block = block
+
+	return nil
 }
 
-func (aes *CFB) Decrypt(s []byte) ([]byte, error) {
-	var err error
-	d := []byte{}
-	return d, err
+func (m *CFB) Encrypt(src []byte) ([]byte, error) {
+	// Block
+	err := m.createBlock()
+	if err != nil {
+		return nil, err
+	}
+	// BlockMode
+	dst := make([]byte, len(src))
+	steam := cipher.NewCFBEncrypter(m.block, m.iv)
+	steam.XORKeyStream(dst, src)
+	return dst, nil
 }
 
-func (aes *CFB) IV() []byte {
-	return aes.iv
+func (m *CFB) Decrypt(src []byte) ([]byte, error) {
+	// Block
+	err := m.createBlock()
+	if err != nil {
+		return nil, err
+	}
+	// BlockMode
+	dst := make([]byte, len(src))
+	steam := cipher.NewCFBEncrypter(m.block, m.iv)
+	steam.XORKeyStream(dst, src)
+	return dst, nil
 }
 
-func (aes *CFB) SetIV(iv []byte) error {
-	return copyIV(aes.iv, iv)
+func (m *CFB) IV() []byte {
+	return m.iv
+}
+
+func (m *CFB) SetIV(iv []byte) error {
+	return copyIV(m.iv, iv)
 }

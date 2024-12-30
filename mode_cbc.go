@@ -1,33 +1,68 @@
 package anngo
 
-import "crypto/rand"
+import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+)
 
 func NewCBC(key []byte, p PaddingInterface) *CBC {
-	aes := new(CBC)
-	aes.key = make([]byte, len(key))
-	copy(aes.key, key)
-	aes.p = p
-	aes.iv = make([]byte, BlockSize)
-	rand.Read(aes.iv)
-	return aes
+	m := new(CBC)
+	m.key = make([]byte, len(key))
+	copy(m.key, key)
+	m.p = p
+	m.iv = make([]byte, BlockSize)
+	rand.Read(m.iv)
+	return m
 }
 
-func (aes *CBC) Encrypt(s []byte) ([]byte, error) {
-	var err error
-	d := []byte{}
-	return d, err
+func (m *CBC) createBlock() error {
+	if m.block != nil {
+		return nil
+	}
+	block, err := aes.NewCipher(m.key)
+	if err != nil {
+		return err
+	}
+	m.block = block
+
+	return nil
 }
 
-func (aes *CBC) Decrypt(s []byte) ([]byte, error) {
-	var err error
-	d := []byte{}
-	return d, err
+func (m *CBC) Encrypt(s []byte) ([]byte, error) {
+	// Block
+	err := m.createBlock()
+	if err != nil {
+		return nil, err
+	}
+	// BlockMode
+	blockMode := cipher.NewCBCEncrypter(m.block, m.iv)
+	text := m.p.Pad(s)
+	d := make([]byte, len(text))
+	blockMode.CryptBlocks(d, text)
+
+	return d, nil
 }
 
-func (aes *CBC) IV() []byte {
-	return aes.iv
+func (m *CBC) Decrypt(s []byte) ([]byte, error) {
+	// Block
+	err := m.createBlock()
+	if err != nil {
+		return nil, err
+	}
+	// BlockMode
+	blockMode := cipher.NewCBCDecrypter(m.block, m.iv)
+	d := make([]byte, len(s))
+	blockMode.CryptBlocks(d, s)
+	text := m.p.Unpad(d)
+
+	return text, nil
 }
 
-func (aes *CBC) SetIV(iv []byte) error {
-	return copyIV(aes.iv, iv)
+func (m *CBC) IV() []byte {
+	return m.iv
+}
+
+func (m *CBC) SetIV(iv []byte) error {
+	return copyIV(m.iv, iv)
 }
