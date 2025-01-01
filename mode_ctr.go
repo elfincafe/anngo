@@ -42,9 +42,16 @@ func (m *CTR) Encrypt(src []byte) ([]byte, error) {
 }
 
 func (m *CTR) Decrypt(src []byte) ([]byte, error) {
-	var err error
-	d := []byte{}
-	return d, err
+	// Block
+	err := m.createBlock()
+	if err != nil {
+		return nil, err
+	}
+	// BlockMode
+	dst := make([]byte, len(src))
+	steam := cipher.NewCTR(m.block, m.iv)
+	steam.XORKeyStream(dst, src)
+	return dst, nil
 }
 
 func (m *CTR) IV() []byte {

@@ -15,7 +15,7 @@ const (
 )
 
 type (
-	PaddingInterface interface {
+	PadderInterface interface {
 		Pad([]byte) []byte
 		Unpad([]byte) []byte
 	}
@@ -32,15 +32,15 @@ type (
 	ISO10126 struct {
 	}
 	ECB struct {
-		key   []byte
-		block cipher.Block
-		p     PaddingInterface
+		key    []byte
+		block  cipher.Block
+		padder PadderInterface
 	}
 	CBC struct {
-		key   []byte
-		block cipher.Block
-		p     PaddingInterface
-		iv    []byte
+		key    []byte
+		block  cipher.Block
+		padder PadderInterface
+		iv     []byte
 	}
 	CFB struct {
 		key   []byte

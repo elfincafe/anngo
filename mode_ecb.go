@@ -4,10 +4,11 @@ import (
 	"crypto/aes"
 )
 
-func NewECB(key []byte, p PaddingInterface) *ECB {
+func NewECB(key []byte, padder PadderInterface) *ECB {
 	m := new(ECB)
 	m.key = make([]byte, len(key))
 	copy(m.key, key)
+	m.padder = padder
 	return m
 }
 
@@ -30,12 +31,16 @@ func (m *ECB) Encrypt(s []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	src := m.p.Pad(s)
+	src := m.padder.Pad(s)
 	length := len(src)
 	dst := make([]byte, length)
-	for i := 0; i*BlockSize <= length; i++ {
-		idx := i + BlockSize
-		m.block.Encrypt(dst[idx:idx+BlockSize], src[idx:idx+BlockSize])
+	for i := 0; i*BlockSize < length; i++ {
+		idx := i * BlockSize
+		max := idx + BlockSize
+		if max > length {
+			max = length
+		}
+		m.block.Encrypt(dst[idx:max], src[idx:max])
 	}
 
 	return dst, err
@@ -49,10 +54,14 @@ func (m *ECB) Decrypt(src []byte) ([]byte, error) {
 	}
 	length := len(src)
 	dst := make([]byte, length)
-	for i := 0; i*BlockSize <= length; i++ {
-		idx := i + BlockSize
-		m.block.Encrypt(dst[idx:idx+BlockSize], src[idx:idx+BlockSize])
+	for i := 0; i*BlockSize < length; i++ {
+		idx := i * BlockSize
+		max := idx + BlockSize
+		if max > length {
+			max = length
+		}
+		m.block.Decrypt(dst[idx:max], src[idx:max])
 	}
-	d := m.p.Unpad(dst)
+	d := m.padder.Unpad(dst)
 	return d, err
 }

@@ -6,11 +6,11 @@ import (
 	"crypto/rand"
 )
 
-func NewCBC(key []byte, p PaddingInterface) *CBC {
+func NewCBC(key []byte, padder PadderInterface) *CBC {
 	m := new(CBC)
 	m.key = make([]byte, len(key))
 	copy(m.key, key)
-	m.p = p
+	m.padder = padder
 	m.iv = make([]byte, BlockSize)
 	rand.Read(m.iv)
 	return m
@@ -29,7 +29,7 @@ func (m *CBC) createBlock() error {
 	return nil
 }
 
-func (m *CBC) Encrypt(s []byte) ([]byte, error) {
+func (m *CBC) Encrypt(src []byte) ([]byte, error) {
 	// Block
 	err := m.createBlock()
 	if err != nil {
@@ -37,14 +37,14 @@ func (m *CBC) Encrypt(s []byte) ([]byte, error) {
 	}
 	// BlockMode
 	blockMode := cipher.NewCBCEncrypter(m.block, m.iv)
-	text := m.p.Pad(s)
-	d := make([]byte, len(text))
-	blockMode.CryptBlocks(d, text)
+	text := m.padder.Pad(src)
+	dst := make([]byte, len(text))
+	blockMode.CryptBlocks(dst, text)
 
-	return d, nil
+	return dst, nil
 }
 
-func (m *CBC) Decrypt(s []byte) ([]byte, error) {
+func (m *CBC) Decrypt(src []byte) ([]byte, error) {
 	// Block
 	err := m.createBlock()
 	if err != nil {
@@ -52,11 +52,11 @@ func (m *CBC) Decrypt(s []byte) ([]byte, error) {
 	}
 	// BlockMode
 	blockMode := cipher.NewCBCDecrypter(m.block, m.iv)
-	d := make([]byte, len(s))
-	blockMode.CryptBlocks(d, s)
-	text := m.p.Unpad(d)
+	d := make([]byte, len(src))
+	blockMode.CryptBlocks(d, src)
+	dst := m.padder.Unpad(d)
 
-	return text, nil
+	return dst, nil
 }
 
 func (m *CBC) IV() []byte {

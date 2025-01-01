@@ -6,11 +6,11 @@ import (
 	"testing"
 )
 
-func TestNewCTR(t *testing.T) {
+func TestNewOFB(t *testing.T) {
 
 }
 
-func TestCTREncrypt(t *testing.T) {
+func TestOFBEncrypt(t *testing.T) {
 	// Case
 	cases := []struct {
 		key      []byte
@@ -20,14 +20,14 @@ func TestCTREncrypt(t *testing.T) {
 	// Test
 	for i, c := range cases {
 		m := NewOFB(c.key)
-		ret, _ := m.Encrypt(c.data)
+		ret, _ := m.Decrypt(c.data)
 		if !bytes.Equal(ret, c.expected) {
 			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, ret, c.expected)
 		}
 	}
 }
 
-func TestCTRDecrypt(t *testing.T) {
+func TestOFBDecrypt(t *testing.T) {
 	// Case
 	cases := []struct {
 		key      []byte
@@ -36,7 +36,7 @@ func TestCTRDecrypt(t *testing.T) {
 	}{}
 	// Test
 	for i, c := range cases {
-		m := NewCTR(c.key)
+		m := NewOFB(c.key)
 		ret, _ := m.Decrypt(c.data)
 		if !bytes.Equal(ret, c.expected) {
 			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, ret, c.expected)
@@ -44,24 +44,11 @@ func TestCTRDecrypt(t *testing.T) {
 	}
 }
 
-func TestCTRIV(t *testing.T) {
-	// Case
-	cases := []struct {
-		key      []byte
-		data     []byte
-		expected []byte
-	}{}
-	// Test
-	for i, c := range cases {
-		m := NewCTR(c.key)
-		ret, _ := m.Decrypt(c.data)
-		if !bytes.Equal(ret, c.expected) {
-			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, ret, c.expected)
-		}
-	}
+func TestOFBIV(t *testing.T) {
+
 }
 
-func TestCTRSetIV(t *testing.T) {
+func TestOFBSetIV(t *testing.T) {
 	// Case
 	b := make([]byte, 128)
 	rand.Read(b)
@@ -72,7 +59,7 @@ func TestCTRSetIV(t *testing.T) {
 		{iv: b[:16], expected: b[:16]},
 	}
 	// Test
-	m := NewCTR(b[16:32])
+	m := NewOFB(b[16:32])
 	for i, c := range cases {
 		m.SetIV(c.iv)
 		if !bytes.Equal(m.iv, c.iv) {
