@@ -36,8 +36,8 @@ func (m *CFB) Encrypt(src []byte) ([]byte, error) {
 	}
 	// BlockMode
 	dst := make([]byte, len(src))
-	steam := cipher.NewCFBEncrypter(m.block, m.iv)
-	steam.XORKeyStream(dst, src)
+	stream := cipher.NewCFBEncrypter(m.block, m.iv)
+	stream.XORKeyStream(dst, src)
 	return dst, nil
 }
 
@@ -49,8 +49,8 @@ func (m *CFB) Decrypt(src []byte) ([]byte, error) {
 	}
 	// BlockMode
 	dst := make([]byte, len(src))
-	steam := cipher.NewCFBEncrypter(m.block, m.iv)
-	steam.XORKeyStream(dst, src)
+	stream := cipher.NewCFBDecrypter(m.block, m.iv)
+	stream.XORKeyStream(dst, src)
 	return dst, nil
 }
 
