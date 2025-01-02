@@ -27,7 +27,7 @@ func TestAnsiX923Pad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
-			expected: []byte("0123456789abcdef"),
+			expected: append(append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x00}, 15)...), []byte{0x10}...),
 		},
 		{
 			s:        []byte("0123456789abcdefg"),
@@ -69,7 +69,7 @@ func TestAnsiX923Unpad(t *testing.T) {
 			expected: []byte("0123456789"),
 		},
 		{
-			s:        []byte("0123456789abcdef"),
+			s:        append(append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x00}, 15)...), []byte{0x10}...),
 			expected: []byte("0123456789abcdef"),
 		},
 		{

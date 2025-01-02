@@ -27,7 +27,7 @@ func TestPkcs7Pad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
-			expected: []byte("0123456789abcdef"),
+			expected: append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x10}, 16)...),
 		},
 		{
 			s:        []byte("0123456789abcdefg"),
@@ -70,6 +70,10 @@ func TestPkcs7Unpad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
+			expected: []byte("0123456789abcdef"),
+		},
+		{
+			s:        append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x10}, 16)...),
 			expected: []byte("0123456789abcdef"),
 		},
 		{

@@ -12,10 +12,10 @@ func NewIso10126() ISO10126 {
 
 func (p ISO10126) Pad(src []byte) []byte {
 	length := len(src)
-	count := BlockSize - length%BlockSize
-	if count >= BlockSize || count <= 0 {
+	if length == 0 {
 		return src
 	}
+	count := BlockSize - length%BlockSize
 	b := make([]byte, count)
 	_, _ = rand.Read(b)
 	b[count-1] = byte(count)
@@ -29,12 +29,11 @@ func (p ISO10126) Pad(src []byte) []byte {
 
 func (p ISO10126) Unpad(src []byte) []byte {
 	length := len(src)
-	count := length % BlockSize
-	if count != 0 || length == 0 {
+	if length == 0 || length%BlockSize != 0 {
 		return src
 	}
 	last := src[length-1]
-	if last < 0x01 || last > 0x0f {
+	if last < 0x01 || last > 0x10 {
 		return src
 	}
 	idx := length - int(last)

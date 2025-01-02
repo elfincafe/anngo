@@ -47,7 +47,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
-			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 185, 225, 174, 44, 65, 186, 67, 197, 191, 9, 145, 158, 80, 182, 103, 166},
 		},
 		{
 			key:      []byte("0123456789abcdef"),
@@ -82,7 +82,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
-			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 153, 165, 56, 93, 33, 142, 163, 89, 162, 124, 212, 142, 61, 107, 152, 51},
 		},
 		{
 			key:      []byte("0123456789abcdef"),
@@ -117,7 +117,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
-			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			expected: []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 163, 194, 41, 127, 235, 32, 213, 154, 152, 246, 224, 156, 176, 255, 214, 174},
 		},
 		{
 			key:      []byte("0123456789abcdef"),
@@ -152,7 +152,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
-			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 34, 202, 124, 137, 36, 34, 92, 149, 92, 129, 255, 83, 148, 124, 106, 20},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
@@ -187,7 +187,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
-			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 117, 2, 232, 214, 129, 23, 249, 149, 50, 55, 84, 188, 175, 9, 194, 131},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
@@ -222,7 +222,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
-			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			expected: []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 137, 172, 203, 184, 177, 46, 73, 228, 7, 68, 199, 11, 28, 211, 237, 195},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
@@ -257,7 +257,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
-			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 55, 6, 103, 181, 75, 146, 59, 61, 181, 186, 204, 148, 242, 78, 1, 145},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
@@ -292,7 +292,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
-			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 220, 70, 178, 48, 196, 89, 166, 138, 182, 29, 117, 237, 234, 122, 190, 114},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
@@ -327,7 +327,7 @@ func TestCBCEncrypt(t *testing.T) {
 			data:     []byte("abcdefghijklmnop"),
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
-			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			expected: []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 205, 231, 191, 145, 172, 163, 217, 224, 239, 133, 115, 165, 250, 16, 28, 243},
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
@@ -380,7 +380,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdef"),
-			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 185, 225, 174, 44, 65, 186, 67, 197, 191, 9, 145, 158, 80, 182, 103, 166},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
 			expected: []byte("abcdefghijklmnop"),
@@ -415,7 +415,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdef"),
-			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 153, 165, 56, 93, 33, 142, 163, 89, 162, 124, 212, 142, 61, 107, 152, 51},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
 			expected: []byte("abcdefghijklmnop"),
@@ -450,7 +450,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdef"),
-			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165},
+			data:     []byte{223, 102, 188, 59, 252, 82, 55, 6, 17, 249, 178, 22, 167, 238, 164, 165, 163, 194, 41, 127, 235, 32, 213, 154, 152, 246, 224, 156, 176, 255, 214, 174},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
 			expected: []byte("abcdefghijklmnop"),
@@ -485,7 +485,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
-			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 34, 202, 124, 137, 36, 34, 92, 149, 92, 129, 255, 83, 148, 124, 106, 20},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
 			expected: []byte("abcdefghijklmnop"),
@@ -520,7 +520,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
-			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 117, 2, 232, 214, 129, 23, 249, 149, 50, 55, 84, 188, 175, 9, 194, 131},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
 			expected: []byte("abcdefghijklmnop"),
@@ -555,7 +555,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmn"),
-			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19},
+			data:     []byte{166, 246, 107, 118, 89, 120, 34, 111, 1, 69, 101, 247, 75, 57, 57, 19, 137, 172, 203, 184, 177, 46, 73, 228, 7, 68, 199, 11, 28, 211, 237, 195},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
 			expected: []byte("abcdefghijklmnop"),
@@ -590,7 +590,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
-			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 55, 6, 103, 181, 75, 146, 59, 61, 181, 186, 204, 148, 242, 78, 1, 145},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewZero(),
 			expected: []byte("abcdefghijklmnop"),
@@ -625,7 +625,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
-			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 220, 70, 178, 48, 196, 89, 166, 138, 182, 29, 117, 237, 234, 122, 190, 114},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewPkcs7(),
 			expected: []byte("abcdefghijklmnop"),
@@ -660,7 +660,7 @@ func TestCBCDecrypt(t *testing.T) {
 		},
 		{
 			key:      []byte("0123456789abcdefghijklmnopqrstuv"),
-			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190},
+			data:     []byte{54, 89, 15, 187, 17, 112, 140, 191, 66, 174, 219, 46, 123, 43, 126, 190, 205, 231, 191, 145, 172, 163, 217, 224, 239, 133, 115, 165, 250, 16, 28, 243},
 			iv:       []byte("alouepc95malj23l"),
 			padder:   NewAnsiX923(),
 			expected: []byte("abcdefghijklmnop"),
