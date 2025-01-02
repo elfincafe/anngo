@@ -3,11 +3,20 @@ package anngo
 import (
 	"bytes"
 	"crypto/rand"
+	"reflect"
 	"testing"
 )
 
 func TestNewCTR(t *testing.T) {
-
+	b := make([]byte, 128)
+	rand.Read(b)
+	m := NewCTR(b[:16])
+	v := reflect.TypeOf(m)
+	if v.Kind() != reflect.Pointer {
+		t.Errorf("Mode: %v, Expected: %v", v.Kind(), reflect.Pointer)
+	} else if v.Elem().Name() != "CTR" {
+		t.Errorf("Mode Name: %v, Expected: %v", v.Name(), "CTR")
+	}
 }
 
 func TestCTREncrypt(t *testing.T) {
@@ -231,20 +240,11 @@ func TestCTRDecrypt(t *testing.T) {
 }
 
 func TestCTRIV(t *testing.T) {
-	// Case
-	cases := []struct {
-		key      []byte
-		data     []byte
-		iv       []byte
-		expected []byte
-	}{}
-	// Test
-	for i, c := range cases {
-		m := NewCTR(c.key)
-		ret, _ := m.Decrypt(c.data)
-		if !bytes.Equal(ret, c.expected) {
-			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, ret, c.expected)
-		}
+	b := make([]byte, BlockSize)
+	rand.Read(b)
+	m := NewCTR(b[:BlockSize])
+	if !bytes.Equal(m.iv, m.IV()) {
+		t.Errorf("Result:   %v\nExpected: %v\n", m.IV(), m.iv)
 	}
 }
 

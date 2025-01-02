@@ -2,10 +2,21 @@ package anngo
 
 import (
 	"bytes"
+	"crypto/rand"
+	"reflect"
 	"testing"
 )
 
 func TestNewECB(t *testing.T) {
+	b := make([]byte, 128)
+	rand.Read(b)
+	m := NewECB(b[:16], NewPkcs7())
+	v := reflect.TypeOf(m)
+	if v.Kind() != reflect.Pointer {
+		t.Errorf("Mode: %v, Expected: %v", v.Kind(), reflect.Pointer)
+	} else if v.Elem().Name() != "ECB" {
+		t.Errorf("Mode Name: %v, Expected: %v", v.Name(), "ECB")
+	}
 }
 
 func TestECBEncrypt(t *testing.T) {

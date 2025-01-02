@@ -12,10 +12,10 @@ func TestNewCBC(t *testing.T) {
 	rand.Read(b)
 	m := NewCBC(b[:16], NewPkcs7())
 	v := reflect.TypeOf(m)
-	if v.Kind() != reflect.Struct {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
-	} else if v.Name() != "ANSIX923" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ANSIX923")
+	if v.Kind() != reflect.Pointer {
+		t.Errorf("Mode: %v, Expected: %v", v.Kind(), reflect.Pointer)
+	} else if v.Elem().Name() != "CBC" {
+		t.Errorf("Mode Name: %v, Expected: %v", v.Name(), "CBC")
 	}
 }
 
@@ -693,7 +693,12 @@ func TestCBCDecrypt(t *testing.T) {
 }
 
 func TestCBCIV(t *testing.T) {
-
+	b := make([]byte, BlockSize)
+	rand.Read(b)
+	m := NewCBC(b[:BlockSize], NewPkcs7())
+	if !bytes.Equal(m.iv, m.IV()) {
+		t.Errorf("Result:   %v\nExpected: %v\n", m.IV(), m.iv)
+	}
 }
 
 func TestCBCSetIV(t *testing.T) {

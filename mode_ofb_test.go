@@ -3,11 +3,20 @@ package anngo
 import (
 	"bytes"
 	"crypto/rand"
+	"reflect"
 	"testing"
 )
 
 func TestNewOFB(t *testing.T) {
-
+	b := make([]byte, 128)
+	rand.Read(b)
+	m := NewOFB(b[:16])
+	v := reflect.TypeOf(m)
+	if v.Kind() != reflect.Pointer {
+		t.Errorf("Mode: %v, Expected: %v", v.Kind(), reflect.Pointer)
+	} else if v.Elem().Name() != "OFB" {
+		t.Errorf("Mode Name: %v, Expected: %v", v.Name(), "OFB")
+	}
 }
 
 func TestOFBEncrypt(t *testing.T) {
@@ -230,7 +239,12 @@ func TestOFBDecrypt(t *testing.T) {
 }
 
 func TestOFBIV(t *testing.T) {
-
+	b := make([]byte, BlockSize)
+	rand.Read(b)
+	m := NewOFB(b[:BlockSize])
+	if !bytes.Equal(m.iv, m.IV()) {
+		t.Errorf("Result:   %v\nExpected: %v\n", m.IV(), m.iv)
+	}
 }
 
 func TestOFBSetIV(t *testing.T) {
