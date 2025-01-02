@@ -27,7 +27,7 @@ func TestZeroPad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
-			expected: []byte("0123456789abcdef"),
+			expected: append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x00}, 16)...),
 		},
 		{
 			s:        []byte("0123456789abcdefg"),
@@ -50,7 +50,7 @@ func TestZeroPad(t *testing.T) {
 	for i, c := range cases {
 		r := p.Pad(c.s)
 		if !bytes.Equal(r, c.expected) {
-			t.Errorf("[%d] Pad\n  Result  : %v\n  Expected: %v", i, r, c.expected)
+			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, r, c.expected)
 		}
 	}
 }
@@ -70,6 +70,10 @@ func TestZeroUnpad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
+			expected: []byte("0123456789abcdef"),
+		},
+		{
+			s:        append([]byte("0123456789abcdef"), bytes.Repeat([]byte{0x00}, 16)...),
 			expected: []byte("0123456789abcdef"),
 		},
 		{
@@ -93,7 +97,7 @@ func TestZeroUnpad(t *testing.T) {
 	for i, c := range cases {
 		r := p.Unpad(c.s)
 		if !bytes.Equal(r, c.expected) {
-			t.Errorf("[%d] Unpad\n  Result  : %v\n  Expected: %v", i, r, c.expected)
+			t.Errorf("\n<Case%d>\nResult:   %v\nExpected: %v\n", i, r, c.expected)
 		}
 	}
 }

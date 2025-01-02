@@ -30,7 +30,7 @@ func TestIso10126Pad(t *testing.T) {
 		},
 		{
 			s:        []byte("0123456789abcdef"),
-			expected: []byte("0123456789abcdef"),
+			expected: append([]byte("0123456789abcdef"), append(b[:15], []byte{0x10}...)...),
 		},
 		{
 			s:        []byte("0123456789abcdefg"),
@@ -77,7 +77,7 @@ func TestIso10126Unpad(t *testing.T) {
 			expected: []byte("0123456789"),
 		},
 		{
-			s:        []byte("0123456789abcdef"),
+			s:        append([]byte("0123456789abcdef"), append(b[:15], []byte{0x10}...)...),
 			expected: []byte("0123456789abcdef"),
 		},
 		{
