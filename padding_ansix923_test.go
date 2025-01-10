@@ -2,19 +2,8 @@ package anngo
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
 )
-
-func TestNewAnsiX923(t *testing.T) {
-	p := NewAnsiX923()
-	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Struct {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
-	} else if v.Name() != "ANSIX923" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ANSIX923")
-	}
-}
 
 func TestAnsiX923Pad(t *testing.T) {
 	cases := []struct {
@@ -46,7 +35,7 @@ func TestAnsiX923Pad(t *testing.T) {
 			expected: append([]byte("0123456789abcdefghijklmnopqrstu"), []byte{0x01}...),
 		},
 	}
-	p := NewAnsiX923()
+	p := ansiX923Padding{}
 	for i, c := range cases {
 		r := p.Pad(c.s)
 		if !bytes.Equal(r, c.expected) {
@@ -89,7 +78,7 @@ func TestAnsiX923Unpad(t *testing.T) {
 			expected: []byte("0123456789abcdefghijklmnopqrstu"),
 		},
 	}
-	p := NewAnsiX923()
+	p := ansiX923Padding{}
 	for i, c := range cases {
 		r := p.Unpad(c.s)
 		if !bytes.Equal(r, c.expected) {

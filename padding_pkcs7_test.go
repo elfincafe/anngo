@@ -2,19 +2,8 @@ package anngo
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
 )
-
-func TestNewPkcs7(t *testing.T) {
-	p := NewPkcs7()
-	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Struct {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
-	} else if v.Name() != "PKCS7" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "PKCS7")
-	}
-}
 
 func TestPkcs7Pad(t *testing.T) {
 	cases := []struct {
@@ -46,7 +35,7 @@ func TestPkcs7Pad(t *testing.T) {
 			expected: append([]byte("0123456789abcdefghijklmnopqrstu"), []byte{0x01}...),
 		},
 	}
-	p := NewPkcs7()
+	p := pkcs7Padding{}
 	for i, c := range cases {
 		r := p.Pad(c.s)
 		if !bytes.Equal(r, c.expected) {
@@ -93,7 +82,7 @@ func TestPkcs7Unpad(t *testing.T) {
 			expected: []byte("0123456789abcdefghijklmnopqrstu"),
 		},
 	}
-	p := NewPkcs7()
+	p := pkcs7Padding{}
 	for i, c := range cases {
 		r := p.Unpad(c.s)
 		if !bytes.Equal(r, c.expected) {

@@ -5,12 +5,7 @@ import (
 	"bytes"
 )
 
-func NewPkcs7() PKCS7 {
-	p := PKCS7{}
-	return p
-}
-
-func (p PKCS7) Pad(src []byte) []byte {
+func (p pkcs7Padding) Pad(src []byte) []byte {
 	length := len(src)
 	if length == 0 {
 		return src
@@ -27,7 +22,7 @@ func (p PKCS7) Pad(src []byte) []byte {
 	return dst
 }
 
-func (p PKCS7) Unpad(src []byte) []byte {
+func (p pkcs7Padding) Unpad(src []byte) []byte {
 	length := len(src)
 	if length == 0 || length%BlockSize != 0 {
 		return src

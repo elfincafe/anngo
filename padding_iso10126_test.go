@@ -3,19 +3,8 @@ package anngo
 import (
 	"bytes"
 	"crypto/rand"
-	"reflect"
 	"testing"
 )
-
-func TestNewIso10126(t *testing.T) {
-	p := NewIso10126()
-	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Struct {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
-	} else if v.Name() != "ISO10126" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ISO10126")
-	}
-}
 
 func TestIso10126Pad(t *testing.T) {
 	b := make([]byte, 16)
@@ -49,7 +38,7 @@ func TestIso10126Pad(t *testing.T) {
 			expected: append([]byte("0123456789abcdefghijklmnopqrstu"), []byte{0x01}...),
 		},
 	}
-	p := NewIso10126()
+	p := iso10126Padding{}
 	for i, c := range cases {
 		r := p.Pad(c.s)
 		length := len(c.s)
@@ -97,7 +86,7 @@ func TestIso10126Unpad(t *testing.T) {
 			expected: []byte("0123456789abcdefghijklmnopqrstu"),
 		},
 	}
-	p := NewIso10126()
+	p := iso10126Padding{}
 	for i, c := range cases {
 		r := p.Unpad(c.s)
 		if !bytes.Equal(r, c.expected) {
