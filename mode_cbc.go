@@ -6,11 +6,11 @@ import (
 	"crypto/rand"
 )
 
-func NewCBC(key []byte, padder PadderInterface) *CBC {
+func NewCBC(key []byte) *CBC {
 	m := new(CBC)
 	m.key = make([]byte, len(key))
 	copy(m.key, key)
-	m.padder = padder
+	m.padder = pkcs7Padding{}
 	m.iv = make([]byte, BlockSize)
 	rand.Read(m.iv)
 	return m
@@ -27,6 +27,22 @@ func (m *CBC) createBlock() error {
 	m.block = block
 
 	return nil
+}
+
+func (m *CBC) Pkcs7() {
+	m.padder = pkcs7Padding{}
+}
+
+func (m *CBC) ZeroPadding() {
+	m.padder = zeroPadding{}
+}
+
+func (m *CBC) AnsiX923() {
+	m.padder = ansiX923Padding{}
+}
+
+func (m *CBC) Iso10126() {
+	m.padder = iso10126Padding{}
 }
 
 func (m *CBC) Encrypt(src []byte) ([]byte, error) {

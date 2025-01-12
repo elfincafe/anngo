@@ -2,19 +2,8 @@ package anngo
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
 )
-
-func TestNewZero(t *testing.T) {
-	p := NewZero()
-	v := reflect.TypeOf(p)
-	if v.Kind() != reflect.Struct {
-		t.Errorf("Padding Type: %v, Expected: %v", v.Kind(), reflect.Struct)
-	} else if v.Name() != "ZERO" {
-		t.Errorf("Padding Name: %v, Expected: %v", v.Name(), "ZERO")
-	}
-}
 
 func TestZeroPad(t *testing.T) {
 	cases := []struct {
@@ -46,7 +35,7 @@ func TestZeroPad(t *testing.T) {
 			expected: append([]byte("0123456789abcdefghijklmnopqrstu"), []byte{0x00}...),
 		},
 	}
-	p := NewZero()
+	p := zeroPadding{}
 	for i, c := range cases {
 		r := p.Pad(c.s)
 		if !bytes.Equal(r, c.expected) {
@@ -93,7 +82,7 @@ func TestZeroUnpad(t *testing.T) {
 			expected: []byte("0123456789abcdefghijklmnopqrstu"),
 		},
 	}
-	p := NewZero()
+	p := zeroPadding{}
 	for i, c := range cases {
 		r := p.Unpad(c.s)
 		if !bytes.Equal(r, c.expected) {

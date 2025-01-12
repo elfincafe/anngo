@@ -5,12 +5,7 @@ import (
 	"bytes"
 )
 
-func NewZero() ZERO {
-	p := ZERO{}
-	return p
-}
-
-func (p ZERO) Pad(src []byte) []byte {
+func (p zeroPadding) Pad(src []byte) []byte {
 	length := len(src)
 	if length == 0 {
 		return src
@@ -23,7 +18,7 @@ func (p ZERO) Pad(src []byte) []byte {
 	return dst
 }
 
-func (p ZERO) Unpad(src []byte) []byte {
+func (p zeroPadding) Unpad(src []byte) []byte {
 	length := len(src)
 	if length == 0 || length%BlockSize != 0 {
 		return src

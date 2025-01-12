@@ -15,7 +15,7 @@ const (
 )
 
 type (
-	PadderInterface interface {
+	padderInterface interface {
 		Pad([]byte) []byte
 		Unpad([]byte) []byte
 	}
@@ -23,23 +23,23 @@ type (
 		Encrypt([]byte) ([]byte, error)
 		Decrypt([]byte) ([]byte, error)
 	}
-	ZERO struct {
+	zeroPadding struct {
 	}
-	PKCS7 struct {
+	pkcs7Padding struct {
 	}
-	ANSIX923 struct {
+	ansiX923Padding struct {
 	}
-	ISO10126 struct {
+	iso10126Padding struct {
 	}
 	ECB struct {
 		key    []byte
 		block  cipher.Block
-		padder PadderInterface
+		padder padderInterface
 	}
 	CBC struct {
 		key    []byte
 		block  cipher.Block
-		padder PadderInterface
+		padder padderInterface
 		iv     []byte
 	}
 	CFB struct {
