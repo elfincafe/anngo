@@ -1,3 +1,4 @@
-module github.com/elficafe/anngo
+module github.com/elfincafe/anngo
 
-go 1.19
+go 1.20.0
+
